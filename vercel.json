@@ -1,36 +1,7 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "services": {
-    "app": {
-      "root": ".",
-      "framework": "fastapi"
-    },
-    "frontend": {
-      "root": "frontend",
-      "framework": "vite",
-      "installCommand": "pnpm install --frozen-lockfile",
-      "buildCommand": "VITE_APP_BASE=/ pnpm build",
-      "outputDirectory": "dist"
-    }
-  },
-  "rewrites": [
-    {
-      "source": "/api/(.*)",
-      "destination": {
-        "service": "app"
-      }
-    },
-    {
-      "source": "/healthz",
-      "destination": {
-        "service": "app"
-      }
-    },
-    {
-      "source": "/(.*)",
-      "destination": {
-        "service": "frontend"
-      }
-    }
-  ]
+  "framework": "vite",
+  "installCommand": "cd frontend && pnpm install --frozen-lockfile",
+  "buildCommand": "cd frontend && pnpm run build:vercel",
+  "outputDirectory": "dist"
 }
