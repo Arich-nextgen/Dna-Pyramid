@@ -9,6 +9,7 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint src",
     "prepare:python": "python3 ../scripts/prepare_runtime.py",
+    "build:vercel": "tsc -b && VITE_BROWSER_PYTHON=true vite build --outDir ../dist",
     "build:site": "pnpm run prepare:python && tsc -b && VITE_BROWSER_PYTHON=true vite build --outDir ../dist",
     "test:python": "cd .. && node tests/test_browser_python.mjs",
     "test:text-import": "node --experimental-strip-types tests/test_text_import.mjs"
