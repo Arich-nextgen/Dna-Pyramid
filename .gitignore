@@ -1,0 +1,1 @@
+__pycache__/\n.pytest_cache/\n.venv/\nfrontend/node_modules/\nfrontend/dist/\n*.tsbuildinfo\n*.sqlite3\n.env\nsite-dist/\n/dist/\n
