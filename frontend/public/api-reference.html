@@ -1,0 +1,1243 @@
+<!doctype html><html lang="ru"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PYRAMID DNA · API</title><style>body{font:15px/1.7 sans-serif;color:#2e402f;background:#fafbf7;max-width:1050px;margin:40px auto;padding:0 25px}h1{font-size:26px}a{color:#496e36}table{border-collapse:collapse;width:100%;font-size:13px}td,th{border-bottom:1px solid #dfe6d5;padding:12px;text-align:left}pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:12px;background:#f0f4e8;padding:20px}summary{cursor:pointer;margin:24px 0}code{font-size:12px}</style><a href="/">← Приложение</a><h1>Контракт FastAPI</h1><p>Маршруты и схема сформированы из настоящего app.openapi(). В веб-версии запросы выполняются в Python worker через ASGI-транспорт; локальная версия предоставляет HTTP API.</p><table><thead><tr><th>Метод</th><th>Маршрут</th><th>Назначение</th></tr></thead><tbody><tr><td>GET</td><td><code>/</code></td><td>Root</td></tr><tr><td>GET</td><td><code>/healthz</code></td><td>Healthz</td></tr><tr><td>GET</td><td><code>/api/v1/health</code></td><td>Health</td></tr><tr><td>POST</td><td><code>/api/v1/analyze</code></td><td>Analyze One</td></tr><tr><td>POST</td><td><code>/api/v1/analyze/batch</code></td><td>Analyze Batch</td></tr><tr><td>POST</td><td><code>/api/v1/compare</code></td><td>Compare Two</td></tr><tr><td>POST</td><td><code>/api/v1/search/similar</code></td><td>Search Similar</td></tr><tr><td>GET</td><td><code>/api/v1/records</code></td><td>List Records</td></tr><tr><td>GET</td><td><code>/api/v1/records/{record_id}</code></td><td>Get Record</td></tr><tr><td>GET</td><td><code>/api/v1/records/{record_id}/neighbors</code></td><td>Record Neighbors</td></tr><tr><td>GET</td><td><code>/api/v1/dataset/stats</code></td><td>Dataset Stats</td></tr><tr><td>GET</td><td><code>/api/v1/dataset/validate</code></td><td>Dataset Validate</td></tr><tr><td>GET</td><td><code>/api/v1/evaluate</code></td><td>Evaluate</td></tr><tr><td>GET</td><td><code>/api/v1/cases</code></td><td>Listing</td></tr><tr><td>POST</td><td><code>/api/v1/cases</code></td><td>Create</td></tr><tr><td>GET</td><td><code>/api/v1/cases/{case_id}</code></td><td>Get</td></tr><tr><td>PUT</td><td><code>/api/v1/cases/{case_id}</code></td><td>Update</td></tr><tr><td>DELETE</td><td><code>/api/v1/cases/{case_id}</code></td><td>Delete</td></tr></tbody></table><details><summary>Полная схема OpenAPI</summary><pre>{
+  &quot;openapi&quot;: &quot;3.1.0&quot;,
+  &quot;info&quot;: {
+    &quot;title&quot;: &quot;Pyramid DNA API | SafeNet KZ&quot;,
+    &quot;description&quot;: &quot;Rule-based financial-mechanism analysis for RU/KZ examples. SYNTHETIC TEST DATA ONLY; not a legal determination. No collection from social networks. Explicit case saving uses local SQLite.&quot;,
+    &quot;version&quot;: &quot;1.0.0&quot;
+  },
+  &quot;paths&quot;: {
+    &quot;/&quot;: {
+      &quot;get&quot;: {
+        &quot;tags&quot;: [
+          &quot;System&quot;
+        ],
+        &quot;summary&quot;: &quot;Root&quot;,
+        &quot;operationId&quot;: &quot;root__get&quot;,
+        &quot;responses&quot;: {
+          &quot;200&quot;: {
+            &quot;description&quot;: &quot;Successful Response&quot;,
+            &quot;content&quot;: {
+              &quot;application/json&quot;: {
+                &quot;schema&quot;: {}
+              }
+            }
+          }
+        }
+      }
+    },
+    &quot;/healthz&quot;: {
+      &quot;get&quot;: {
+        &quot;tags&quot;: [
+          &quot;System&quot;
+        ],
+        &quot;summary&quot;: &quot;Healthz&quot;,
+        &quot;operationId&quot;: &quot;healthz_healthz_get&quot;,
+        &quot;responses&quot;: {
+          &quot;200&quot;: {
+            &quot;description&quot;: &quot;Successful Response&quot;,
+            &quot;content&quot;: {
+              &quot;application/json&quot;: {
+                &quot;schema&quot;: {}
+              }
+            }
+          }
+        }
+      }
+    },
+    &quot;/api/v1/health&quot;: {
+      &quot;get&quot;: {
+        &quot;tags&quot;: [
+          &quot;System&quot;
+        ],
+        &quot;summary&quot;: &quot;Health&quot;,
+        &quot;operationId&quot;: &quot;health_api_v1_health_get&quot;,
+        &quot;parameters&quot;: [
+          {
+            &quot;name&quot;: &quot;X-API-Key&quot;,
+            &quot;in&quot;: &quot;header&quot;,
+            &quot;required&quot;: false,
+            &quot;schema&quot;: {
+              &quot;anyOf&quot;: [
+                {
+                  &quot;type&quot;: &quot;string&quot;
+                },
+                {
+                  &quot;type&quot;: &quot;null&quot;
+                }
+              ],
+              &quot;title&quot;: &quot;X-Api-Key&quot;
+            }
+          }
+        ],
+        &quot;responses&quot;: {
+          &quot;200&quot;: {
+            &quot;description&quot;: &quot;Successful Response&quot;,
+            &quot;content&quot;: {
+              &quot;application/json&quot;: {
+                &quot;schema&quot;: {}
+              }
+            }
+          },
+          &quot;422&quot;: {
+            &quot;description&quot;: &quot;Validation Error&quot;,
+            &quot;content&quot;: {
+              &quot;application/json&quot;: {
+                &quot;schema&quot;: {
+                  &quot;$ref&quot;: &quot;#/components/schemas/HTTPValidationError&quot;
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    &quot;/api/v1/analyze&quot;: {
+      &quot;post&quot;: {
+        &quot;tags&quot;: [
+          &quot;Analysis&quot;
+        ],
+        &quot;summary&quot;: &quot;Analyze One&quot;,
+        &quot;operationId&quot;: &quot;analyze_one_api_v1_analyze_post&quot;,
+        &quot;parameters&quot;: [
+          {
+            &quot;name&quot;: &quot;X-API-Key&quot;,
+            &quot;in&quot;: &quot;header&quot;,
+            &quot;required&quot;: false,
+            &quot;schema&quot;: {
+              &quot;anyOf&quot;: [
+                {
+                  &quot;type&quot;: &quot;string&quot;
+                },
+                {
+                  &quot;type&quot;: &quot;null&quot;
+                }
+              ],
+              &quot;title&quot;: &quot;X-Api-Key&quot;
+            }
+          }
+        ],
+        &quot;requestBody&quot;: {
+          &quot;required&quot;: true,
+          &quot;content&quot;: {
+            &quot;application/json&quot;: {
+              &quot;schema&quot;: {
+                &quot;$ref&quot;: &quot;#/components/schemas/AnalyzeRequest&quot;
+              }
+            }
+          }
+        },
+        &quot;responses&quot;: {
+          &quot;200&quot;: {
+            &quot;description&quot;: &quot;Successful Response&quot;,
+            &quot;content&quot;: {
+              &quot;application/json&quot;: {
+                &quot;schema&quot;: {}
+              }
+            }
+          },
+          &quot;422&quot;: {
+            &quot;description&quot;: &quot;Validation Error&quot;,
+            &quot;content&quot;: {
+              &quot;application/json&quot;: {
+                &quot;schema&quot;: {
+                  &quot;$ref&quot;: &quot;#/components/schemas/HTTPValidationError&quot;
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    &quot;/api/v1/analyze/batch&quot;: {
+      &quot;post&quot;: {
+        &quot;tags&quot;: [
+          &quot;Analysis&quot;
+        ],
+        &quot;summary&quot;: &quot;Analyze Batch&quot;,
+        &quot;operationId&quot;: &quot;analyze_batch_api_v1_analyze_batch_post&quot;,
+        &quot;parameters&quot;: [
+          {
+            &quot;name&quot;: &quot;X-API-Key&quot;,
+            &quot;in&quot;: &quot;header&quot;,
+            &quot;required&quot;: false,
+            &quot;schema&quot;: {
+              &quot;anyOf&quot;: [
+                {
+                  &quot;type&quot;: &quot;string&quot;
+                },
+                {
+                  &quot;type&quot;: &quot;null&quot;
+                }
+              ],
+              &quot;title&quot;: &quot;X-Api-Key&quot;
+            }
+          }
+        ],
+        &quot;requestBody&quot;: {
+          &quot;required&quot;: true,
+          &quot;content&quot;: {
+            &quot;application/json&quot;: {
+              &quot;schema&quot;: {
+                &quot;$ref&quot;: &quot;#/components/schemas/BatchRequest&quot;
+              }
+            }
+          }
+        },
+        &quot;responses&quot;: {
+          &quot;200&quot;: {
+            &quot;description&quot;: &quot;Successful Response&quot;,
+            &quot;content&quot;: {
+              &quot;application/json&quot;: {
+                &quot;schema&quot;: {}
+              }
+            }
+          },
+          &quot;422&quot;: {
+            &quot;description&quot;: &quot;Validation Error&quot;,
+            &quot;content&quot;: {
+              &quot;application/json&quot;: {
+                &quot;schema&quot;: {
+                  &quot;$ref&quot;: &quot;#/components/schemas/HTTPValidationError&quot;
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    &quot;/api/v1/compare&quot;: {
+      &quot;post&quot;: {
+        &quot;tags&quot;: [
+          &quot;Matching&quot;
+        ],
+        &quot;summary&quot;: &quot;Compare Two&quot;,
+        &quot;operationId&quot;: &quot;compare_two_api_v1_compare_post&quot;,
+        &quot;parameters&quot;: [
+          {
+            &quot;name&quot;: &quot;X-API-Key&quot;,
+            &quot;in&quot;: &quot;header&quot;,
+            &quot;required&quot;: false,
+            &quot;schema&quot;: {
+              &quot;anyOf&quot;: [
+                {
+                  &quot;type&quot;: &quot;string&quot;
+                },
+                {
+                  &quot;type&quot;: &quot;null&quot;
+                }
+              ],
+              &quot;title&quot;: &quot;X-Api-Key&quot;
+            }
+          }
+        ],
+        &quot;requestBody&quot;: {
+          &quot;required&quot;: true,
+          &quot;content&quot;: {
+            &quot;application/json&quot;: {
+              &quot;schema&quot;: {
+                &quot;$ref&quot;: &quot;#/components/schemas/CompareRequest&quot;
+              }
+            }
+          }
+        },
+        &quot;responses&quot;: {
+          &quot;200&quot;: {
+            &quot;description&quot;: &quot;Successful Response&quot;,
+            &quot;content&quot;: {
+              &quot;application/json&quot;: {
+                &quot;schema&quot;: {}
+              }
+            }
+          },
+          &quot;422&quot;: {
+            &quot;description&quot;: &quot;Validation Error&quot;,
+            &quot;content&quot;: {
+              &quot;application/json&quot;: {
+                &quot;schema&quot;: {
+                  &quot;$ref&quot;: &quot;#/components/schemas/HTTPValidationError&quot;
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    &quot;/api/v1/search/similar&quot;: {
+      &quot;post&quot;: {
+        &quot;tags&quot;: [
+          &quot;Matching&quot;
+        ],
+        &quot;summary&quot;: &quot;Search Similar&quot;,
+        &quot;operationId&quot;: &quot;search_similar_api_v1_search_similar_post&quot;,
+        &quot;parameters&quot;: [
+          {
+            &quot;name&quot;: &quot;X-API-Key&quot;,
+            &quot;in&quot;: &quot;header&quot;,
+            &quot;required&quot;: false,
+            &quot;schema&quot;: {
+              &quot;anyOf&quot;: [
+                {
+                  &quot;type&quot;: &quot;string&quot;
+                },
+                {
+                  &quot;type&quot;: &quot;null&quot;
+                }
+              ],
+              &quot;title&quot;: &quot;X-Api-Key&quot;
+            }
+          }
+        ],
+        &quot;requestBody&quot;: {
+          &quot;required&quot;: true,
+          &quot;content&quot;: {
+            &quot;application/json&quot;: {
+              &quot;schema&quot;: {
+                &quot;$ref&quot;: &quot;#/components/schemas/SimilaritySearchRequest&quot;
+              }
+            }
+          }
+        },
+        &quot;responses&quot;: {
+          &quot;200&quot;: {
+            &quot;description&quot;: &quot;Successful Response&quot;,
+            &quot;content&quot;: {
+              &quot;application/json&quot;: {
+                &quot;schema&quot;: {}
+              }
+            }
+          },
+          &quot;422&quot;: {
+            &quot;description&quot;: &quot;Validation Error&quot;,
+            &quot;content&quot;: {
+              &quot;application/json&quot;: {
+                &quot;schema&quot;: {
+                  &quot;$ref&quot;: &quot;#/components/schemas/HTTPValidationError&quot;
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    &quot;/api/v1/records&quot;: {
+      &quot;get&quot;: {
+        &quot;tags&quot;: [
+          &quot;Dataset&quot;
+        ],
+        &quot;summary&quot;: &quot;List Records&quot;,
+        &quot;operationId&quot;: &quot;list_records_api_v1_records_get&quot;,
+        &quot;parameters&quot;: [
+          {
+            &quot;name&quot;: &quot;page&quot;,
+            &quot;in&quot;: &quot;query&quot;,
+            &quot;required&quot;: false,
+            &quot;schema&quot;: {
+              &quot;type&quot;: &quot;integer&quot;,
+              &quot;maximum&quot;: 100000,
+              &quot;minimum&quot;: 1,
+              &quot;default&quot;: 1,
+              &quot;title&quot;: &quot;Page&quot;
+            }
+          },
+          {
+            &quot;name&quot;: &quot;page_size&quot;,
+            &quot;in&quot;: &quot;query&quot;,
+            &quot;required&quot;: false,
+            &quot;schema&quot;: {
+              &quot;type&quot;: &quot;integer&quot;,
+              &quot;maximum&quot;: 100,
+              &quot;minimum&quot;: 1,
+              &quot;default&quot;: 20,
+              &quot;title&quot;: &quot;Page Size&quot;
+            }
+          },
+          {
+            &quot;name&quot;: &quot;split&quot;,
+            &quot;in&quot;: &quot;query&quot;,
+            &quot;required&quot;: false,
+            &quot;schema&quot;: {
+              &quot;anyOf&quot;: [
+                {
+                  &quot;enum&quot;: [
+                    &quot;train&quot;,
+                    &quot;validation&quot;,
+                    &quot;test&quot;
+                  ],
+                  &quot;type&quot;: &quot;string&quot;
+                },
+                {
+                  &quot;type&quot;: &quot;null&quot;
+                }
+              ],
+              &quot;title&quot;: &quot;Split&quot;
+            }
+          },
+          {
+            &quot;name&quot;: &quot;risk&quot;,
+            &quot;in&quot;: &quot;query&quot;,
+            &quot;required&quot;: false,
+            &quot;schema&quot;: {
+              &quot;anyOf&quot;: [
+                {
+                  &quot;enum&quot;: [
+                    &quot;low&quot;,
+                    &quot;medium&quot;,
+                    &quot;high&quot;
+                  ],
+                  &quot;type&quot;: &quot;string&quot;
+                },
+                {
+                  &quot;type&quot;: &quot;null&quot;
+                }
+              ],
+              &quot;title&quot;: &quot;Risk&quot;
+            }
+          },
+          {
+            &quot;name&quot;: &quot;language&quot;,
+            &quot;in&quot;: &quot;query&quot;,
+            &quot;required&quot;: false,
+            &quot;schema&quot;: {
+              &quot;anyOf&quot;: [
+                {
+                  &quot;type&quot;: &quot;string&quot;,
+                  &quot;maxLength&quot;: 30
+                },
+                {
+                  &quot;type&quot;: &quot;null&quot;
+                }
+              ],
+              &quot;title&quot;: &quot;Language&quot;
+            }
+          },
+          {
+            &quot;name&quot;: &quot;q&quot;,
+            &quot;in&quot;: &quot;query&quot;,
+            &quot;required&quot;: false,
+            &quot;schema&quot;: {
+              &quot;anyOf&quot;: [
+                {
+                  &quot;type&quot;: &quot;string&quot;,
+                  &quot;maxLength&quot;: 100
+                },
+                {
+                  &quot;type&quot;: &quot;null&quot;
+                }
+              ],
+              &quot;title&quot;: &quot;Q&quot;
+            }
+          },
+          {
+            &quot;name&quot;: &quot;X-API-Key&quot;,
+            &quot;in&quot;: &quot;header&quot;,
+            &quot;required&quot;: false,
+            &quot;schema&quot;: {
+              &quot;anyOf&quot;: [
+                {
+                  &quot;type&quot;: &quot;string&quot;
+                },
+                {
+                  &quot;type&quot;: &quot;null&quot;
+                }
+              ],
+              &quot;title&quot;: &quot;X-Api-Key&quot;
+            }
+          }
+        ],
+        &quot;responses&quot;: {
+          &quot;200&quot;: {
+            &quot;description&quot;: &quot;Successful Response&quot;,
+            &quot;content&quot;: {
+              &quot;application/json&quot;: {
+                &quot;schema&quot;: {}
+              }
+            }
+          },
+          &quot;422&quot;: {
+            &quot;description&quot;: &quot;Validation Error&quot;,
+            &quot;content&quot;: {
+              &quot;application/json&quot;: {
+                &quot;schema&quot;: {
+                  &quot;$ref&quot;: &quot;#/components/schemas/HTTPValidationError&quot;
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    &quot;/api/v1/records/{record_id}&quot;: {
+      &quot;get&quot;: {
+        &quot;tags&quot;: [
+          &quot;Dataset&quot;
+        ],
+        &quot;summary&quot;: &quot;Get Record&quot;,
+        &quot;operationId&quot;: &quot;get_record_api_v1_records__record_id__get&quot;,
+        &quot;parameters&quot;: [
+          {
+            &quot;name&quot;: &quot;record_id&quot;,
+            &quot;in&quot;: &quot;path&quot;,
+            &quot;required&quot;: true,
+            &quot;schema&quot;: {
+              &quot;type&quot;: &quot;string&quot;,
+              &quot;title&quot;: &quot;Record Id&quot;
+            }
+          },
+          {
+            &quot;name&quot;: &quot;X-API-Key&quot;,
+            &quot;in&quot;: &quot;header&quot;,
+            &quot;required&quot;: false,
+            &quot;schema&quot;: {
+              &quot;anyOf&quot;: [
+                {
+                  &quot;type&quot;: &quot;string&quot;
+                },
+                {
+                  &quot;type&quot;: &quot;null&quot;
+                }
+              ],
+              &quot;title&quot;: &quot;X-Api-Key&quot;
+            }
+          }
+        ],
+        &quot;responses&quot;: {
+          &quot;200&quot;: {
+            &quot;description&quot;: &quot;Successful Response&quot;,
+            &quot;content&quot;: {
+              &quot;application/json&quot;: {
+                &quot;schema&quot;: {}
+              }
+            }
+          },
+          &quot;422&quot;: {
+            &quot;description&quot;: &quot;Validation Error&quot;,
+            &quot;content&quot;: {
+              &quot;application/json&quot;: {
+                &quot;schema&quot;: {
+                  &quot;$ref&quot;: &quot;#/components/schemas/HTTPValidationError&quot;
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    &quot;/api/v1/records/{record_id}/neighbors&quot;: {
+      &quot;get&quot;: {
+        &quot;tags&quot;: [
+          &quot;Matching&quot;
+        ],
+        &quot;summary&quot;: &quot;Record Neighbors&quot;,
+        &quot;operationId&quot;: &quot;record_neighbors_api_v1_records__record_id__neighbors_get&quot;,
+        &quot;parameters&quot;: [
+          {
+            &quot;name&quot;: &quot;record_id&quot;,
+            &quot;in&quot;: &quot;path&quot;,
+            &quot;required&quot;: true,
+            &quot;schema&quot;: {
+              &quot;type&quot;: &quot;string&quot;,
+              &quot;title&quot;: &quot;Record Id&quot;
+            }
+          },
+          {
+            &quot;name&quot;: &quot;top_k&quot;,
+            &quot;in&quot;: &quot;query&quot;,
+            &quot;required&quot;: false,
+            &quot;schema&quot;: {
+              &quot;type&quot;: &quot;integer&quot;,
+              &quot;maximum&quot;: 50,
+              &quot;minimum&quot;: 1,
+              &quot;default&quot;: 10,
+              &quot;title&quot;: &quot;Top K&quot;
+            }
+          },
+          {
+            &quot;name&quot;: &quot;min_similarity&quot;,
+            &quot;in&quot;: &quot;query&quot;,
+            &quot;required&quot;: false,
+            &quot;schema&quot;: {
+              &quot;type&quot;: &quot;number&quot;,
+              &quot;maximum&quot;: 1,
+              &quot;minimum&quot;: 0,
+              &quot;default&quot;: 0.7,
+              &quot;title&quot;: &quot;Min Similarity&quot;
+            }
+          },
+          {
+            &quot;name&quot;: &quot;split&quot;,
+            &quot;in&quot;: &quot;query&quot;,
+            &quot;required&quot;: false,
+            &quot;schema&quot;: {
+              &quot;enum&quot;: [
+                &quot;all&quot;,
+                &quot;train&quot;,
+                &quot;validation&quot;,
+                &quot;test&quot;
+              ],
+              &quot;type&quot;: &quot;string&quot;,
+              &quot;default&quot;: &quot;all&quot;,
+              &quot;title&quot;: &quot;Split&quot;
+            }
+          },
+          {
+            &quot;name&quot;: &quot;X-API-Key&quot;,
+            &quot;in&quot;: &quot;header&quot;,
+            &quot;required&quot;: false,
+            &quot;schema&quot;: {
+              &quot;anyOf&quot;: [
+                {
+                  &quot;type&quot;: &quot;string&quot;
+                },
+                {
+                  &quot;type&quot;: &quot;null&quot;
+                }
+              ],
+              &quot;title&quot;: &quot;X-Api-Key&quot;
+            }
+          }
+        ],
+        &quot;responses&quot;: {
+          &quot;200&quot;: {
+            &quot;description&quot;: &quot;Successful Response&quot;,
+            &quot;content&quot;: {
+              &quot;application/json&quot;: {
+                &quot;schema&quot;: {}
+              }
+            }
+          },
+          &quot;422&quot;: {
+            &quot;description&quot;: &quot;Validation Error&quot;,
+            &quot;content&quot;: {
+              &quot;application/json&quot;: {
+                &quot;schema&quot;: {
+                  &quot;$ref&quot;: &quot;#/components/schemas/HTTPValidationError&quot;
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    &quot;/api/v1/dataset/stats&quot;: {
+      &quot;get&quot;: {
+        &quot;tags&quot;: [
+          &quot;Dataset&quot;
+        ],
+        &quot;summary&quot;: &quot;Dataset Stats&quot;,
+        &quot;operationId&quot;: &quot;dataset_stats_api_v1_dataset_stats_get&quot;,
+        &quot;parameters&quot;: [
+          {
+            &quot;name&quot;: &quot;X-API-Key&quot;,
+            &quot;in&quot;: &quot;header&quot;,
+            &quot;required&quot;: false,
+            &quot;schema&quot;: {
+              &quot;anyOf&quot;: [
+                {
+                  &quot;type&quot;: &quot;string&quot;
+                },
+                {
+                  &quot;type&quot;: &quot;null&quot;
+                }
+              ],
+              &quot;title&quot;: &quot;X-Api-Key&quot;
+            }
+          }
+        ],
+        &quot;responses&quot;: {
+          &quot;200&quot;: {
+            &quot;description&quot;: &quot;Successful Response&quot;,
+            &quot;content&quot;: {
+              &quot;application/json&quot;: {
+                &quot;schema&quot;: {}
+              }
+            }
+          },
+          &quot;422&quot;: {
+            &quot;description&quot;: &quot;Validation Error&quot;,
+            &quot;content&quot;: {
+              &quot;application/json&quot;: {
+                &quot;schema&quot;: {
+                  &quot;$ref&quot;: &quot;#/components/schemas/HTTPValidationError&quot;
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    &quot;/api/v1/dataset/validate&quot;: {
+      &quot;get&quot;: {
+        &quot;tags&quot;: [
+          &quot;Dataset&quot;
+        ],
+        &quot;summary&quot;: &quot;Dataset Validate&quot;,
+        &quot;operationId&quot;: &quot;dataset_validate_api_v1_dataset_validate_get&quot;,
+        &quot;parameters&quot;: [
+          {
+            &quot;name&quot;: &quot;X-API-Key&quot;,
+            &quot;in&quot;: &quot;header&quot;,
+            &quot;required&quot;: false,
+            &quot;schema&quot;: {
+              &quot;anyOf&quot;: [
+                {
+                  &quot;type&quot;: &quot;string&quot;
+                },
+                {
+                  &quot;type&quot;: &quot;null&quot;
+                }
+              ],
+              &quot;title&quot;: &quot;X-Api-Key&quot;
+            }
+          }
+        ],
+        &quot;responses&quot;: {
+          &quot;200&quot;: {
+            &quot;description&quot;: &quot;Successful Response&quot;,
+            &quot;content&quot;: {
+              &quot;application/json&quot;: {
+                &quot;schema&quot;: {}
+              }
+            }
+          },
+          &quot;422&quot;: {
+            &quot;description&quot;: &quot;Validation Error&quot;,
+            &quot;content&quot;: {
+              &quot;application/json&quot;: {
+                &quot;schema&quot;: {
+                  &quot;$ref&quot;: &quot;#/components/schemas/HTTPValidationError&quot;
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    &quot;/api/v1/evaluate&quot;: {
+      &quot;get&quot;: {
+        &quot;tags&quot;: [
+          &quot;Evaluation&quot;
+        ],
+        &quot;summary&quot;: &quot;Evaluate&quot;,
+        &quot;operationId&quot;: &quot;evaluate_api_v1_evaluate_get&quot;,
+        &quot;parameters&quot;: [
+          {
+            &quot;name&quot;: &quot;split&quot;,
+            &quot;in&quot;: &quot;query&quot;,
+            &quot;required&quot;: false,
+            &quot;schema&quot;: {
+              &quot;enum&quot;: [
+                &quot;train&quot;,
+                &quot;validation&quot;,
+                &quot;test&quot;
+              ],
+              &quot;type&quot;: &quot;string&quot;,
+              &quot;default&quot;: &quot;test&quot;,
+              &quot;title&quot;: &quot;Split&quot;
+            }
+          },
+          {
+            &quot;name&quot;: &quot;X-API-Key&quot;,
+            &quot;in&quot;: &quot;header&quot;,
+            &quot;required&quot;: false,
+            &quot;schema&quot;: {
+              &quot;anyOf&quot;: [
+                {
+                  &quot;type&quot;: &quot;string&quot;
+                },
+                {
+                  &quot;type&quot;: &quot;null&quot;
+                }
+              ],
+              &quot;title&quot;: &quot;X-Api-Key&quot;
+            }
+          }
+        ],
+        &quot;responses&quot;: {
+          &quot;200&quot;: {
+            &quot;description&quot;: &quot;Successful Response&quot;,
+            &quot;content&quot;: {
+              &quot;application/json&quot;: {
+                &quot;schema&quot;: {}
+              }
+            }
+          },
+          &quot;422&quot;: {
+            &quot;description&quot;: &quot;Validation Error&quot;,
+            &quot;content&quot;: {
+              &quot;application/json&quot;: {
+                &quot;schema&quot;: {
+                  &quot;$ref&quot;: &quot;#/components/schemas/HTTPValidationError&quot;
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    &quot;/api/v1/cases&quot;: {
+      &quot;get&quot;: {
+        &quot;summary&quot;: &quot;Listing&quot;,
+        &quot;operationId&quot;: &quot;listing_api_v1_cases_get&quot;,
+        &quot;parameters&quot;: [
+          {
+            &quot;name&quot;: &quot;X-API-Key&quot;,
+            &quot;in&quot;: &quot;header&quot;,
+            &quot;required&quot;: false,
+            &quot;schema&quot;: {
+              &quot;anyOf&quot;: [
+                {
+                  &quot;type&quot;: &quot;string&quot;
+                },
+                {
+                  &quot;type&quot;: &quot;null&quot;
+                }
+              ],
+              &quot;title&quot;: &quot;X-Api-Key&quot;
+            }
+          }
+        ],
+        &quot;responses&quot;: {
+          &quot;200&quot;: {
+            &quot;description&quot;: &quot;Successful Response&quot;,
+            &quot;content&quot;: {
+              &quot;application/json&quot;: {
+                &quot;schema&quot;: {}
+              }
+            }
+          },
+          &quot;422&quot;: {
+            &quot;description&quot;: &quot;Validation Error&quot;,
+            &quot;content&quot;: {
+              &quot;application/json&quot;: {
+                &quot;schema&quot;: {
+                  &quot;$ref&quot;: &quot;#/components/schemas/HTTPValidationError&quot;
+                }
+              }
+            }
+          }
+        }
+      },
+      &quot;post&quot;: {
+        &quot;summary&quot;: &quot;Create&quot;,
+        &quot;operationId&quot;: &quot;create_api_v1_cases_post&quot;,
+        &quot;parameters&quot;: [
+          {
+            &quot;name&quot;: &quot;X-API-Key&quot;,
+            &quot;in&quot;: &quot;header&quot;,
+            &quot;required&quot;: false,
+            &quot;schema&quot;: {
+              &quot;anyOf&quot;: [
+                {
+                  &quot;type&quot;: &quot;string&quot;
+                },
+                {
+                  &quot;type&quot;: &quot;null&quot;
+                }
+              ],
+              &quot;title&quot;: &quot;X-Api-Key&quot;
+            }
+          }
+        ],
+        &quot;requestBody&quot;: {
+          &quot;required&quot;: true,
+          &quot;content&quot;: {
+            &quot;application/json&quot;: {
+              &quot;schema&quot;: {
+                &quot;$ref&quot;: &quot;#/components/schemas/CaseInput&quot;
+              }
+            }
+          }
+        },
+        &quot;responses&quot;: {
+          &quot;201&quot;: {
+            &quot;description&quot;: &quot;Successful Response&quot;,
+            &quot;content&quot;: {
+              &quot;application/json&quot;: {
+                &quot;schema&quot;: {}
+              }
+            }
+          },
+          &quot;422&quot;: {
+            &quot;description&quot;: &quot;Validation Error&quot;,
+            &quot;content&quot;: {
+              &quot;application/json&quot;: {
+                &quot;schema&quot;: {
+                  &quot;$ref&quot;: &quot;#/components/schemas/HTTPValidationError&quot;
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    &quot;/api/v1/cases/{case_id}&quot;: {
+      &quot;get&quot;: {
+        &quot;summary&quot;: &quot;Get&quot;,
+        &quot;operationId&quot;: &quot;get_api_v1_cases__case_id__get&quot;,
+        &quot;parameters&quot;: [
+          {
+            &quot;name&quot;: &quot;case_id&quot;,
+            &quot;in&quot;: &quot;path&quot;,
+            &quot;required&quot;: true,
+            &quot;schema&quot;: {
+              &quot;type&quot;: &quot;string&quot;,
+              &quot;title&quot;: &quot;Case Id&quot;
+            }
+          },
+          {
+            &quot;name&quot;: &quot;X-API-Key&quot;,
+            &quot;in&quot;: &quot;header&quot;,
+            &quot;required&quot;: false,
+            &quot;schema&quot;: {
+              &quot;anyOf&quot;: [
+                {
+                  &quot;type&quot;: &quot;string&quot;
+                },
+                {
+                  &quot;type&quot;: &quot;null&quot;
+                }
+              ],
+              &quot;title&quot;: &quot;X-Api-Key&quot;
+            }
+          }
+        ],
+        &quot;responses&quot;: {
+          &quot;200&quot;: {
+            &quot;description&quot;: &quot;Successful Response&quot;,
+            &quot;content&quot;: {
+              &quot;application/json&quot;: {
+                &quot;schema&quot;: {}
+              }
+            }
+          },
+          &quot;422&quot;: {
+            &quot;description&quot;: &quot;Validation Error&quot;,
+            &quot;content&quot;: {
+              &quot;application/json&quot;: {
+                &quot;schema&quot;: {
+                  &quot;$ref&quot;: &quot;#/components/schemas/HTTPValidationError&quot;
+                }
+              }
+            }
+          }
+        }
+      },
+      &quot;put&quot;: {
+        &quot;summary&quot;: &quot;Update&quot;,
+        &quot;operationId&quot;: &quot;update_api_v1_cases__case_id__put&quot;,
+        &quot;parameters&quot;: [
+          {
+            &quot;name&quot;: &quot;case_id&quot;,
+            &quot;in&quot;: &quot;path&quot;,
+            &quot;required&quot;: true,
+            &quot;schema&quot;: {
+              &quot;type&quot;: &quot;string&quot;,
+              &quot;title&quot;: &quot;Case Id&quot;
+            }
+          },
+          {
+            &quot;name&quot;: &quot;X-API-Key&quot;,
+            &quot;in&quot;: &quot;header&quot;,
+            &quot;required&quot;: false,
+            &quot;schema&quot;: {
+              &quot;anyOf&quot;: [
+                {
+                  &quot;type&quot;: &quot;string&quot;
+                },
+                {
+                  &quot;type&quot;: &quot;null&quot;
+                }
+              ],
+              &quot;title&quot;: &quot;X-Api-Key&quot;
+            }
+          }
+        ],
+        &quot;requestBody&quot;: {
+          &quot;required&quot;: true,
+          &quot;content&quot;: {
+            &quot;application/json&quot;: {
+              &quot;schema&quot;: {
+                &quot;$ref&quot;: &quot;#/components/schemas/CaseInput&quot;
+              }
+            }
+          }
+        },
+        &quot;responses&quot;: {
+          &quot;200&quot;: {
+            &quot;description&quot;: &quot;Successful Response&quot;,
+            &quot;content&quot;: {
+              &quot;application/json&quot;: {
+                &quot;schema&quot;: {}
+              }
+            }
+          },
+          &quot;422&quot;: {
+            &quot;description&quot;: &quot;Validation Error&quot;,
+            &quot;content&quot;: {
+              &quot;application/json&quot;: {
+                &quot;schema&quot;: {
+                  &quot;$ref&quot;: &quot;#/components/schemas/HTTPValidationError&quot;
+                }
+              }
+            }
+          }
+        }
+      },
+      &quot;delete&quot;: {
+        &quot;summary&quot;: &quot;Delete&quot;,
+        &quot;operationId&quot;: &quot;delete_api_v1_cases__case_id__delete&quot;,
+        &quot;parameters&quot;: [
+          {
+            &quot;name&quot;: &quot;case_id&quot;,
+            &quot;in&quot;: &quot;path&quot;,
+            &quot;required&quot;: true,
+            &quot;schema&quot;: {
+              &quot;type&quot;: &quot;string&quot;,
+              &quot;title&quot;: &quot;Case Id&quot;
+            }
+          },
+          {
+            &quot;name&quot;: &quot;X-API-Key&quot;,
+            &quot;in&quot;: &quot;header&quot;,
+            &quot;required&quot;: false,
+            &quot;schema&quot;: {
+              &quot;anyOf&quot;: [
+                {
+                  &quot;type&quot;: &quot;string&quot;
+                },
+                {
+                  &quot;type&quot;: &quot;null&quot;
+                }
+              ],
+              &quot;title&quot;: &quot;X-Api-Key&quot;
+            }
+          }
+        ],
+        &quot;responses&quot;: {
+          &quot;204&quot;: {
+            &quot;description&quot;: &quot;Successful Response&quot;
+          },
+          &quot;422&quot;: {
+            &quot;description&quot;: &quot;Validation Error&quot;,
+            &quot;content&quot;: {
+              &quot;application/json&quot;: {
+                &quot;schema&quot;: {
+                  &quot;$ref&quot;: &quot;#/components/schemas/HTTPValidationError&quot;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  &quot;components&quot;: {
+    &quot;schemas&quot;: {
+      &quot;AnalyzeRequest&quot;: {
+        &quot;properties&quot;: {
+          &quot;text&quot;: {
+            &quot;type&quot;: &quot;string&quot;,
+            &quot;maxLength&quot;: 10000,
+            &quot;minLength&quot;: 3,
+            &quot;title&quot;: &quot;Text&quot;,
+            &quot;description&quot;: &quot;Text or OCR transcription. No access to private chats.&quot;,
+            &quot;examples&quot;: [
+              &quot;Взнос 5 000 ₸, получи 10 000 ₸, пригласи 2 участников&quot;
+            ]
+          }
+        },
+        &quot;type&quot;: &quot;object&quot;,
+        &quot;required&quot;: [
+          &quot;text&quot;
+        ],
+        &quot;title&quot;: &quot;AnalyzeRequest&quot;
+      },
+      &quot;BatchRequest&quot;: {
+        &quot;properties&quot;: {
+          &quot;texts&quot;: {
+            &quot;items&quot;: {
+              &quot;$ref&quot;: &quot;#/components/schemas/AnalyzeRequest&quot;
+            },
+            &quot;type&quot;: &quot;array&quot;,
+            &quot;maxItems&quot;: 100,
+            &quot;minItems&quot;: 1,
+            &quot;title&quot;: &quot;Texts&quot;
+          }
+        },
+        &quot;type&quot;: &quot;object&quot;,
+        &quot;required&quot;: [
+          &quot;texts&quot;
+        ],
+        &quot;title&quot;: &quot;BatchRequest&quot;
+      },
+      &quot;CaseInput&quot;: {
+        &quot;properties&quot;: {
+          &quot;title&quot;: {
+            &quot;type&quot;: &quot;string&quot;,
+            &quot;maxLength&quot;: 200,
+            &quot;minLength&quot;: 1,
+            &quot;title&quot;: &quot;Title&quot;
+          },
+          &quot;text&quot;: {
+            &quot;type&quot;: &quot;string&quot;,
+            &quot;maxLength&quot;: 10000,
+            &quot;minLength&quot;: 3,
+            &quot;title&quot;: &quot;Text&quot;
+          },
+          &quot;source_type&quot;: {
+            &quot;type&quot;: &quot;string&quot;,
+            &quot;enum&quot;: [
+              &quot;public&quot;,
+              &quot;voluntary&quot;,
+              &quot;synthetic&quot;,
+              &quot;other&quot;
+            ],
+            &quot;title&quot;: &quot;Source Type&quot;,
+            &quot;default&quot;: &quot;other&quot;
+          },
+          &quot;source_url&quot;: {
+            &quot;type&quot;: &quot;string&quot;,
+            &quot;maxLength&quot;: 2000,
+            &quot;title&quot;: &quot;Source Url&quot;,
+            &quot;default&quot;: &quot;&quot;
+          },
+          &quot;notes&quot;: {
+            &quot;type&quot;: &quot;string&quot;,
+            &quot;maxLength&quot;: 10000,
+            &quot;title&quot;: &quot;Notes&quot;,
+            &quot;default&quot;: &quot;&quot;
+          },
+          &quot;status&quot;: {
+            &quot;type&quot;: &quot;string&quot;,
+            &quot;enum&quot;: [
+              &quot;new&quot;,
+              &quot;reviewing&quot;,
+              &quot;closed&quot;
+            ],
+            &quot;title&quot;: &quot;Status&quot;,
+            &quot;default&quot;: &quot;new&quot;
+          }
+        },
+        &quot;type&quot;: &quot;object&quot;,
+        &quot;required&quot;: [
+          &quot;title&quot;,
+          &quot;text&quot;
+        ],
+        &quot;title&quot;: &quot;CaseInput&quot;
+      },
+      &quot;CompareRequest&quot;: {
+        &quot;properties&quot;: {
+          &quot;left&quot;: {
+            &quot;$ref&quot;: &quot;#/components/schemas/AnalyzeRequest&quot;
+          },
+          &quot;right&quot;: {
+            &quot;$ref&quot;: &quot;#/components/schemas/AnalyzeRequest&quot;
+          }
+        },
+        &quot;type&quot;: &quot;object&quot;,
+        &quot;required&quot;: [
+          &quot;left&quot;,
+          &quot;right&quot;
+        ],
+        &quot;title&quot;: &quot;CompareRequest&quot;
+      },
+      &quot;HTTPValidationError&quot;: {
+        &quot;properties&quot;: {
+          &quot;detail&quot;: {
+            &quot;items&quot;: {
+              &quot;$ref&quot;: &quot;#/components/schemas/ValidationError&quot;
+            },
+            &quot;type&quot;: &quot;array&quot;,
+            &quot;title&quot;: &quot;Detail&quot;
+          }
+        },
+        &quot;type&quot;: &quot;object&quot;,
+        &quot;title&quot;: &quot;HTTPValidationError&quot;
+      },
+      &quot;SimilaritySearchRequest&quot;: {
+        &quot;properties&quot;: {
+          &quot;text&quot;: {
+            &quot;type&quot;: &quot;string&quot;,
+            &quot;maxLength&quot;: 10000,
+            &quot;minLength&quot;: 3,
+            &quot;title&quot;: &quot;Text&quot;,
+            &quot;description&quot;: &quot;Text or OCR transcription. No access to private chats.&quot;,
+            &quot;examples&quot;: [
+              &quot;Взнос 5 000 ₸, получи 10 000 ₸, пригласи 2 участников&quot;
+            ]
+          },
+          &quot;split&quot;: {
+            &quot;type&quot;: &quot;string&quot;,
+            &quot;enum&quot;: [
+              &quot;all&quot;,
+              &quot;train&quot;,
+              &quot;validation&quot;,
+              &quot;test&quot;
+            ],
+            &quot;title&quot;: &quot;Split&quot;,
+            &quot;default&quot;: &quot;all&quot;
+          },
+          &quot;min_similarity&quot;: {
+            &quot;type&quot;: &quot;number&quot;,
+            &quot;maximum&quot;: 1.0,
+            &quot;minimum&quot;: 0.0,
+            &quot;title&quot;: &quot;Min Similarity&quot;,
+            &quot;default&quot;: 0.7
+          },
+          &quot;top_k&quot;: {
+            &quot;type&quot;: &quot;integer&quot;,
+            &quot;maximum&quot;: 50.0,
+            &quot;minimum&quot;: 1.0,
+            &quot;title&quot;: &quot;Top K&quot;,
+            &quot;default&quot;: 10
+          }
+        },
+        &quot;type&quot;: &quot;object&quot;,
+        &quot;required&quot;: [
+          &quot;text&quot;
+        ],
+        &quot;title&quot;: &quot;SimilaritySearchRequest&quot;
+      },
+      &quot;ValidationError&quot;: {
+        &quot;properties&quot;: {
+          &quot;loc&quot;: {
+            &quot;items&quot;: {
+              &quot;anyOf&quot;: [
+                {
+                  &quot;type&quot;: &quot;string&quot;
+                },
+                {
+                  &quot;type&quot;: &quot;integer&quot;
+                }
+              ]
+            },
+            &quot;type&quot;: &quot;array&quot;,
+            &quot;title&quot;: &quot;Location&quot;
+          },
+          &quot;msg&quot;: {
+            &quot;type&quot;: &quot;string&quot;,
+            &quot;title&quot;: &quot;Message&quot;
+          },
+          &quot;type&quot;: {
+            &quot;type&quot;: &quot;string&quot;,
+            &quot;title&quot;: &quot;Error Type&quot;
+          },
+          &quot;input&quot;: {
+            &quot;title&quot;: &quot;Input&quot;
+          },
+          &quot;ctx&quot;: {
+            &quot;type&quot;: &quot;object&quot;,
+            &quot;title&quot;: &quot;Context&quot;
+          }
+        },
+        &quot;type&quot;: &quot;object&quot;,
+        &quot;required&quot;: [
+          &quot;loc&quot;,
+          &quot;msg&quot;,
+          &quot;type&quot;
+        ],
+        &quot;title&quot;: &quot;ValidationError&quot;
+      }
+    }
+  }
+}</pre></details></html>

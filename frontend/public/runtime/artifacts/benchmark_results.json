@@ -1,0 +1,113 @@
+{
+  "benchmark": "PYRAMID DNA structural matcher vs word TF-IDF cosine similarity",
+  "dataset_provenance": "fully_synthetic",
+  "created_at": "2026-10-20T20:06:53.204455+00:00",
+  "git_commit": "a43a68f",
+  "seed": 73129,
+  "python_version": "3.12.3",
+  "engine_sha256": "fd79f8779403ecf50d0d7c12856f11b39da365f55262e2acfceb96ddf345bca9",
+  "dataset_sha256": "54e00feed4d387b2db28616c82b7c094afd0690d58a48852957d6190b058ae57",
+  "split_mechanism_counts": {
+    "train": 54,
+    "validation": 18,
+    "test": 18
+  },
+  "mechanism_leakage_check": "passed",
+  "tfidf_features": {
+    "word_ngrams": [
+      1,
+      2
+    ],
+    "vocabulary_terms": 2657,
+    "fit_split": "train"
+  },
+  "pair_construction": "all within-mechanism positive pairs plus equal-count seeded negatives sampled within each split; shared ordered pair list for both methods",
+  "pair_ids_sha256": {
+    "train": "dd8250294da933d2f0fee8480576d4b789dae5cab953a15225d7e3365343d244",
+    "validation": "f63d6773b1962172a3fab7d15c58092969707a792fd81bb36b20e3c2c0eac9cd",
+    "test": "c74f30e4358c53334698654ced7714fe318b399c1e75c6de0251a23489bbdab0"
+  },
+  "pairs": {
+    "train": {
+      "positive": 1512,
+      "negative": 1512,
+      "sample_size": 3024
+    },
+    "validation": {
+      "positive": 504,
+      "negative": 504,
+      "sample_size": 1008
+    },
+    "test": {
+      "positive": 504,
+      "negative": 504,
+      "sample_size": 1008
+    }
+  },
+  "threshold_selection": "max validation F1; ties choose the higher threshold",
+  "validation_metrics": {
+    "dna": {
+      "precision": 0.5,
+      "recall": 1.0,
+      "fpr": 1.0,
+      "f1": 0.6666666666666666,
+      "confusion": {
+        "tp": 504,
+        "fp": 504,
+        "fn": 0,
+        "tn": 0
+      },
+      "threshold": 0.0,
+      "sample_size": 1008
+    },
+    "tfidf": {
+      "precision": 0.7628318584070797,
+      "recall": 0.8551587301587301,
+      "fpr": 0.26587301587301587,
+      "f1": 0.8063610851262863,
+      "confusion": {
+        "tp": 431,
+        "fp": 134,
+        "fn": 73,
+        "tn": 370
+      },
+      "threshold": 0.031178164044120646,
+      "sample_size": 1008
+    }
+  },
+  "frozen_thresholds": {
+    "dna": 0.0,
+    "tfidf": 0.031178164044120646
+  },
+  "test_metrics_once": {
+    "dna": {
+      "precision": 0.5,
+      "recall": 1.0,
+      "fpr": 1.0,
+      "f1": 0.6666666666666666,
+      "confusion": {
+        "tp": 504,
+        "fp": 504,
+        "fn": 0,
+        "tn": 0
+      },
+      "threshold": 0.0,
+      "sample_size": 1008
+    },
+    "tfidf": {
+      "precision": 0.7592267135325131,
+      "recall": 0.8571428571428571,
+      "fpr": 0.2718253968253968,
+      "f1": 0.8052190121155638,
+      "confusion": {
+        "tp": 432,
+        "fp": 137,
+        "fn": 72,
+        "tn": 367
+      },
+      "threshold": 0.031178164044120646,
+      "sample_size": 1008
+    }
+  },
+  "interpretation": "This benchmark measures pairwise mechanism matching on the synthetic split only; it is not real-world case accuracy."
+}

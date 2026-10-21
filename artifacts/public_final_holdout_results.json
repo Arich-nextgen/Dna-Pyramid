@@ -1,0 +1,264 @@
+{
+  "dataset_name": "External Public Challenge Set — source-grounded official AFM case summaries",
+  "data_sha256": "7cd2e717d8ef8ad6f358ef89fffb383bc422d50b56321f369691440a0d5d9686",
+  "case_count": 5,
+  "distinct_source_urls": 5,
+  "source_access": {
+    "official_page_opened": 5
+  },
+  "run_characteristics": {
+    "train_performed": false,
+    "threshold_tuned": false,
+    "engine_mutated": false,
+    "risk_labels_scored": false
+  },
+  "extraction_coverage": {
+    "correct_checks": 16,
+    "evaluated_checks": 18,
+    "rate": 0.8889,
+    "binary_correct": 15,
+    "binary_evaluated": 16,
+    "binary_rate": 0.9375,
+    "cases_with_all_expected_checks": 4,
+    "total_cases": 5
+  },
+  "per_feature": {
+    "has_guarantee_claim": {
+      "correct": 3,
+      "evaluated": 3,
+      "failures": [],
+      "coverage": 1.0
+    },
+    "has_recruitment": {
+      "correct": 2,
+      "evaluated": 3,
+      "failures": [
+        "AFM-HOLDOUT-004"
+      ],
+      "coverage": 0.6667
+    },
+    "has_return_claim": {
+      "correct": 5,
+      "evaluated": 5,
+      "failures": [],
+      "coverage": 1.0
+    },
+    "needs_deposit": {
+      "correct": 5,
+      "evaluated": 5,
+      "failures": [],
+      "coverage": 1.0
+    },
+    "period_days": {
+      "correct": 1,
+      "evaluated": 2,
+      "failures": [
+        "AFM-HOLDOUT-004"
+      ],
+      "coverage": 0.5
+    }
+  },
+  "per_case": [
+    {
+      "id": "AFM-HOLDOUT-001",
+      "case_name": "Takorp",
+      "language": "ru",
+      "source_url": "https://www.gov.kz/org/afm/press/news/details/1091595?lang=ru",
+      "checks": [
+        {
+          "feature": "has_guarantee_claim",
+          "expected": true,
+          "observed": true,
+          "correct": true,
+          "kind": "binary_explicit_positive"
+        },
+        {
+          "feature": "has_recruitment",
+          "expected": true,
+          "observed": true,
+          "correct": true,
+          "kind": "binary_explicit_positive"
+        },
+        {
+          "feature": "has_return_claim",
+          "expected": true,
+          "observed": true,
+          "correct": true,
+          "kind": "binary_explicit_positive"
+        },
+        {
+          "feature": "needs_deposit",
+          "expected": true,
+          "observed": true,
+          "correct": true,
+          "kind": "binary_explicit_positive"
+        }
+      ],
+      "correct": 4,
+      "evaluated": 4,
+      "all_expected_features_extracted": true,
+      "risk_label_observed_not_scored": "medium"
+    },
+    {
+      "id": "AFM-HOLDOUT-002",
+      "case_name": "Mooni Gold",
+      "language": "ru",
+      "source_url": "https://www.gov.kz/org/afm/press/news/details/1040557?lang=ru",
+      "checks": [
+        {
+          "feature": "has_guarantee_claim",
+          "expected": true,
+          "observed": true,
+          "correct": true,
+          "kind": "binary_explicit_positive"
+        },
+        {
+          "feature": "has_return_claim",
+          "expected": true,
+          "observed": true,
+          "correct": true,
+          "kind": "binary_explicit_positive"
+        },
+        {
+          "feature": "needs_deposit",
+          "expected": true,
+          "observed": true,
+          "correct": true,
+          "kind": "binary_explicit_positive"
+        }
+      ],
+      "correct": 3,
+      "evaluated": 3,
+      "all_expected_features_extracted": true,
+      "risk_label_observed_not_scored": "medium"
+    },
+    {
+      "id": "AFM-HOLDOUT-003",
+      "case_name": "S-Group (Кокшетау)",
+      "language": "ru",
+      "source_url": "https://www.gov.kz/org/afm/press/news/details/1085504?lang=ru",
+      "checks": [
+        {
+          "feature": "has_guarantee_claim",
+          "expected": true,
+          "observed": true,
+          "correct": true,
+          "kind": "binary_explicit_positive"
+        },
+        {
+          "feature": "has_recruitment",
+          "expected": true,
+          "observed": true,
+          "correct": true,
+          "kind": "binary_explicit_positive"
+        },
+        {
+          "feature": "has_return_claim",
+          "expected": true,
+          "observed": true,
+          "correct": true,
+          "kind": "binary_explicit_positive"
+        },
+        {
+          "feature": "needs_deposit",
+          "expected": true,
+          "observed": true,
+          "correct": true,
+          "kind": "binary_explicit_positive"
+        }
+      ],
+      "correct": 4,
+      "evaluated": 4,
+      "all_expected_features_extracted": true,
+      "risk_label_observed_not_scored": "medium"
+    },
+    {
+      "id": "AFM-HOLDOUT-004",
+      "case_name": "Antares Limited",
+      "language": "kk",
+      "source_url": "https://www.gov.kz/memleket/entities/afm/press/news/details/283841",
+      "checks": [
+        {
+          "feature": "has_recruitment",
+          "expected": true,
+          "observed": false,
+          "correct": false,
+          "kind": "binary_explicit_positive"
+        },
+        {
+          "feature": "has_return_claim",
+          "expected": true,
+          "observed": true,
+          "correct": true,
+          "kind": "binary_explicit_positive"
+        },
+        {
+          "feature": "needs_deposit",
+          "expected": true,
+          "observed": true,
+          "correct": true,
+          "kind": "binary_explicit_positive"
+        },
+        {
+          "feature": "period_days",
+          "expected": 1,
+          "observed": null,
+          "correct": false,
+          "kind": "numeric_exact"
+        }
+      ],
+      "correct": 2,
+      "evaluated": 4,
+      "all_expected_features_extracted": false,
+      "risk_label_observed_not_scored": "low"
+    },
+    {
+      "id": "AFM-HOLDOUT-005",
+      "case_name": "BINCLOUD",
+      "language": "ru",
+      "source_url": "https://www.gov.kz/org/afm/press/news/details/409715?lang=ru",
+      "checks": [
+        {
+          "feature": "has_return_claim",
+          "expected": true,
+          "observed": true,
+          "correct": true,
+          "kind": "binary_explicit_positive"
+        },
+        {
+          "feature": "needs_deposit",
+          "expected": true,
+          "observed": true,
+          "correct": true,
+          "kind": "binary_explicit_positive"
+        },
+        {
+          "feature": "period_days",
+          "expected": 1,
+          "observed": 1,
+          "correct": true,
+          "kind": "numeric_exact"
+        }
+      ],
+      "correct": 3,
+      "evaluated": 3,
+      "all_expected_features_extracted": true,
+      "risk_label_observed_not_scored": "low"
+    }
+  ],
+  "not_measured": [
+    "Real WhatsApp/Telegram accuracy",
+    "Population-level precision or specificity",
+    "Legal status",
+    "Cross-language campaign attribution",
+    "Percentage-return parsing (unsupported in current schema)",
+    "EUR/USD/USDT amount extraction"
+  ],
+  "interpretation": "Coverage means recall on manually identified, source-supported attributes of researcher-authored paraphrases, not accuracy on original promotional messages. Unmentioned attributes are unknown, not negative.",
+  "created_at": "2026-10-20T20:17:29.688091+00:00",
+  "engine_sha256": "fd79f8779403ecf50d0d7c12856f11b39da365f55262e2acfceb96ddf345bca9",
+  "measurement_status": "reserved_holdout_after_freeze",
+  "provenance_note": "Researcher-authored paraphrases of official press releases; not original Telegram/WhatsApp messages.",
+  "freeze_commit_sha": "a43a68f",
+  "post_holdout_engine_changes": false
+}

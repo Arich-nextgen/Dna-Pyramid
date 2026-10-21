@@ -1,0 +1,2 @@
+# Tests use only pytest; the reproducible TF-IDF benchmark is implemented with the Python standard library.
+pytest>=8,<9

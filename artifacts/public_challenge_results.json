@@ -1,0 +1,574 @@
+{
+  "dataset_name": "External Public Challenge Set — source-grounded official AFM case summaries",
+  "data_sha256": "74a9b0aee44e884c7e8e804cd38db1a74bbf429ebde908249600ed6feddc7b71",
+  "case_count": 15,
+  "distinct_source_urls": 15,
+  "source_access": {
+    "official_page_opened": 14,
+    "official_search_index_verified_full_page_unavailable": 1
+  },
+  "run_characteristics": {
+    "train_performed": false,
+    "threshold_tuned": false,
+    "engine_mutated": false,
+    "risk_labels_scored": false
+  },
+  "extraction_coverage": {
+    "correct_checks": 45,
+    "evaluated_checks": 45,
+    "rate": 1.0,
+    "binary_correct": 38,
+    "binary_evaluated": 38,
+    "binary_rate": 1.0,
+    "cases_with_all_expected_checks": 15,
+    "total_cases": 15
+  },
+  "per_feature": {
+    "deposit_kzt": {
+      "correct": 1,
+      "evaluated": 1,
+      "failures": [],
+      "coverage": 1.0
+    },
+    "has_guarantee_claim": {
+      "correct": 2,
+      "evaluated": 2,
+      "failures": [],
+      "coverage": 1.0
+    },
+    "has_recruitment": {
+      "correct": 6,
+      "evaluated": 6,
+      "failures": [],
+      "coverage": 1.0
+    },
+    "has_return_claim": {
+      "correct": 15,
+      "evaluated": 15,
+      "failures": [],
+      "coverage": 1.0
+    },
+    "needs_deposit": {
+      "correct": 15,
+      "evaluated": 15,
+      "failures": [],
+      "coverage": 1.0
+    },
+    "period_days": {
+      "correct": 6,
+      "evaluated": 6,
+      "failures": [],
+      "coverage": 1.0
+    }
+  },
+  "per_case": [
+    {
+      "id": "AFM-PUBLIC-001",
+      "case_name": "Казмунайгаз Инвест",
+      "language": "ru",
+      "source_url": "https://www.gov.kz/org/afm-shymkent/press/news/details/1036153",
+      "checks": [
+        {
+          "feature": "has_return_claim",
+          "expected": true,
+          "observed": true,
+          "correct": true,
+          "kind": "binary_explicit_positive"
+        },
+        {
+          "feature": "needs_deposit",
+          "expected": true,
+          "observed": true,
+          "correct": true,
+          "kind": "binary_explicit_positive"
+        },
+        {
+          "feature": "deposit_kzt",
+          "expected": 500000,
+          "observed": 500000,
+          "correct": true,
+          "kind": "numeric_exact"
+        },
+        {
+          "feature": "period_days",
+          "expected": 15,
+          "observed": 15,
+          "correct": true,
+          "kind": "numeric_exact"
+        }
+      ],
+      "correct": 4,
+      "evaluated": 4,
+      "all_expected_features_extracted": true,
+      "risk_label_observed_not_scored": "low"
+    },
+    {
+      "id": "AFM-PUBLIC-002",
+      "case_name": "Imrat Group",
+      "language": "ru",
+      "source_url": "https://www.gov.kz/org/afm/press/news/details/1087313",
+      "checks": [
+        {
+          "feature": "has_return_claim",
+          "expected": true,
+          "observed": true,
+          "correct": true,
+          "kind": "binary_explicit_positive"
+        },
+        {
+          "feature": "needs_deposit",
+          "expected": true,
+          "observed": true,
+          "correct": true,
+          "kind": "binary_explicit_positive"
+        },
+        {
+          "feature": "period_days",
+          "expected": 1,
+          "observed": 1,
+          "correct": true,
+          "kind": "numeric_exact"
+        }
+      ],
+      "correct": 3,
+      "evaluated": 3,
+      "all_expected_features_extracted": true,
+      "risk_label_observed_not_scored": "medium"
+    },
+    {
+      "id": "AFM-PUBLIC-003",
+      "case_name": "Boxy Wealth",
+      "language": "kk",
+      "source_url": "https://www.gov.kz/org/afm/press/news/details/1078303",
+      "checks": [
+        {
+          "feature": "has_recruitment",
+          "expected": true,
+          "observed": true,
+          "correct": true,
+          "kind": "binary_explicit_positive"
+        },
+        {
+          "feature": "has_return_claim",
+          "expected": true,
+          "observed": true,
+          "correct": true,
+          "kind": "binary_explicit_positive"
+        },
+        {
+          "feature": "needs_deposit",
+          "expected": true,
+          "observed": true,
+          "correct": true,
+          "kind": "binary_explicit_positive"
+        },
+        {
+          "feature": "period_days",
+          "expected": 1,
+          "observed": 1,
+          "correct": true,
+          "kind": "numeric_exact"
+        }
+      ],
+      "correct": 4,
+      "evaluated": 4,
+      "all_expected_features_extracted": true,
+      "risk_label_observed_not_scored": "medium"
+    },
+    {
+      "id": "AFM-PUBLIC-004",
+      "case_name": "Matic Basket",
+      "language": "kk",
+      "source_url": "https://www.gov.kz/org/afm/press/news/details/1033830",
+      "checks": [
+        {
+          "feature": "has_recruitment",
+          "expected": true,
+          "observed": true,
+          "correct": true,
+          "kind": "binary_explicit_positive"
+        },
+        {
+          "feature": "has_return_claim",
+          "expected": true,
+          "observed": true,
+          "correct": true,
+          "kind": "binary_explicit_positive"
+        },
+        {
+          "feature": "needs_deposit",
+          "expected": true,
+          "observed": true,
+          "correct": true,
+          "kind": "binary_explicit_positive"
+        }
+      ],
+      "correct": 3,
+      "evaluated": 3,
+      "all_expected_features_extracted": true,
+      "risk_label_observed_not_scored": "medium"
+    },
+    {
+      "id": "AFM-PUBLIC-005",
+      "case_name": "Sirius Energy",
+      "language": "ru",
+      "source_url": "https://www.gov.kz/org/afm/press/news/details/1177949",
+      "checks": [
+        {
+          "feature": "has_return_claim",
+          "expected": true,
+          "observed": true,
+          "correct": true,
+          "kind": "binary_explicit_positive"
+        },
+        {
+          "feature": "needs_deposit",
+          "expected": true,
+          "observed": true,
+          "correct": true,
+          "kind": "binary_explicit_positive"
+        }
+      ],
+      "correct": 2,
+      "evaluated": 2,
+      "all_expected_features_extracted": true,
+      "risk_label_observed_not_scored": "medium"
+    },
+    {
+      "id": "AFM-PUBLIC-006",
+      "case_name": "Капитал (Шымкент)",
+      "language": "ru",
+      "source_url": "https://www.gov.kz/org/afm/press/news/details/1224106?lang=ru",
+      "checks": [
+        {
+          "feature": "has_guarantee_claim",
+          "expected": true,
+          "observed": true,
+          "correct": true,
+          "kind": "binary_explicit_positive"
+        },
+        {
+          "feature": "has_return_claim",
+          "expected": true,
+          "observed": true,
+          "correct": true,
+          "kind": "binary_explicit_positive"
+        },
+        {
+          "feature": "needs_deposit",
+          "expected": true,
+          "observed": true,
+          "correct": true,
+          "kind": "binary_explicit_positive"
+        }
+      ],
+      "correct": 3,
+      "evaluated": 3,
+      "all_expected_features_extracted": true,
+      "risk_label_observed_not_scored": "medium"
+    },
+    {
+      "id": "AFM-PUBLIC-007",
+      "case_name": "Амир Капитал",
+      "language": "ru",
+      "source_url": "https://www.gov.kz/org/afm/press/news/details/1074596?lang=ru",
+      "checks": [
+        {
+          "feature": "has_return_claim",
+          "expected": true,
+          "observed": true,
+          "correct": true,
+          "kind": "binary_explicit_positive"
+        },
+        {
+          "feature": "needs_deposit",
+          "expected": true,
+          "observed": true,
+          "correct": true,
+          "kind": "binary_explicit_positive"
+        }
+      ],
+      "correct": 2,
+      "evaluated": 2,
+      "all_expected_features_extracted": true,
+      "risk_label_observed_not_scored": "medium"
+    },
+    {
+      "id": "AFM-PUBLIC-008",
+      "case_name": "LIVEGOOD",
+      "language": "ru",
+      "source_url": "https://www.gov.kz/org/afm/press/news/details/936298?lang=ru",
+      "checks": [
+        {
+          "feature": "has_recruitment",
+          "expected": true,
+          "observed": true,
+          "correct": true,
+          "kind": "binary_explicit_positive"
+        },
+        {
+          "feature": "has_return_claim",
+          "expected": true,
+          "observed": true,
+          "correct": true,
+          "kind": "binary_explicit_positive"
+        },
+        {
+          "feature": "needs_deposit",
+          "expected": true,
+          "observed": true,
+          "correct": true,
+          "kind": "binary_explicit_positive"
+        }
+      ],
+      "correct": 3,
+      "evaluated": 3,
+      "all_expected_features_extracted": true,
+      "risk_label_observed_not_scored": "medium"
+    },
+    {
+      "id": "AFM-PUBLIC-009",
+      "case_name": "HitBeatMusic",
+      "language": "ru",
+      "source_url": "https://www.gov.kz/org/afm/press/news/details/866058?lang=ru",
+      "checks": [
+        {
+          "feature": "has_return_claim",
+          "expected": true,
+          "observed": true,
+          "correct": true,
+          "kind": "binary_explicit_positive"
+        },
+        {
+          "feature": "needs_deposit",
+          "expected": true,
+          "observed": true,
+          "correct": true,
+          "kind": "binary_explicit_positive"
+        }
+      ],
+      "correct": 2,
+      "evaluated": 2,
+      "all_expected_features_extracted": true,
+      "risk_label_observed_not_scored": "medium"
+    },
+    {
+      "id": "AFM-PUBLIC-010",
+      "case_name": "Лидер / Алтын Тумар / Великое Будущее",
+      "language": "ru",
+      "source_url": "https://www.gov.kz/org/afm/press/news/details/278182?lang=ru",
+      "checks": [
+        {
+          "feature": "has_return_claim",
+          "expected": true,
+          "observed": true,
+          "correct": true,
+          "kind": "binary_explicit_positive"
+        },
+        {
+          "feature": "needs_deposit",
+          "expected": true,
+          "observed": true,
+          "correct": true,
+          "kind": "binary_explicit_positive"
+        },
+        {
+          "feature": "period_days",
+          "expected": 7,
+          "observed": 7,
+          "correct": true,
+          "kind": "numeric_exact"
+        }
+      ],
+      "correct": 3,
+      "evaluated": 3,
+      "all_expected_features_extracted": true,
+      "risk_label_observed_not_scored": "medium"
+    },
+    {
+      "id": "AFM-PUBLIC-011",
+      "case_name": "Үміт Самғау",
+      "language": "ru",
+      "source_url": "https://www.gov.kz/org/afm/press/news/details/1098359?lang=ru",
+      "checks": [
+        {
+          "feature": "has_return_claim",
+          "expected": true,
+          "observed": true,
+          "correct": true,
+          "kind": "binary_explicit_positive"
+        },
+        {
+          "feature": "needs_deposit",
+          "expected": true,
+          "observed": true,
+          "correct": true,
+          "kind": "binary_explicit_positive"
+        }
+      ],
+      "correct": 2,
+      "evaluated": 2,
+      "all_expected_features_extracted": true,
+      "risk_label_observed_not_scored": "medium"
+    },
+    {
+      "id": "AFM-PUBLIC-012",
+      "case_name": "Life is good Hermes Management Ltd",
+      "language": "ru",
+      "source_url": "https://www.gov.kz/org/afm/press/news/details/924328?lang=ru",
+      "checks": [
+        {
+          "feature": "has_recruitment",
+          "expected": true,
+          "observed": true,
+          "correct": true,
+          "kind": "binary_explicit_positive"
+        },
+        {
+          "feature": "has_return_claim",
+          "expected": true,
+          "observed": true,
+          "correct": true,
+          "kind": "binary_explicit_positive"
+        },
+        {
+          "feature": "needs_deposit",
+          "expected": true,
+          "observed": true,
+          "correct": true,
+          "kind": "binary_explicit_positive"
+        }
+      ],
+      "correct": 3,
+      "evaluated": 3,
+      "all_expected_features_extracted": true,
+      "risk_label_observed_not_scored": "medium"
+    },
+    {
+      "id": "AFM-PUBLIC-013",
+      "case_name": "CVK",
+      "language": "ru",
+      "source_url": "https://www.gov.kz/org/afm/press/news/details/1293999?lang=ru",
+      "checks": [
+        {
+          "feature": "has_recruitment",
+          "expected": true,
+          "observed": true,
+          "correct": true,
+          "kind": "binary_explicit_positive"
+        },
+        {
+          "feature": "has_return_claim",
+          "expected": true,
+          "observed": true,
+          "correct": true,
+          "kind": "binary_explicit_positive"
+        },
+        {
+          "feature": "needs_deposit",
+          "expected": true,
+          "observed": true,
+          "correct": true,
+          "kind": "binary_explicit_positive"
+        },
+        {
+          "feature": "period_days",
+          "expected": 1,
+          "observed": 1,
+          "correct": true,
+          "kind": "numeric_exact"
+        }
+      ],
+      "correct": 4,
+      "evaluated": 4,
+      "all_expected_features_extracted": true,
+      "risk_label_observed_not_scored": "medium"
+    },
+    {
+      "id": "AFM-PUBLIC-014",
+      "case_name": "Crowd 1",
+      "language": "ru",
+      "source_url": "https://www.gov.kz/org/afm/press/news/details/292044?lang=ru",
+      "checks": [
+        {
+          "feature": "has_guarantee_claim",
+          "expected": true,
+          "observed": true,
+          "correct": true,
+          "kind": "binary_explicit_positive"
+        },
+        {
+          "feature": "has_return_claim",
+          "expected": true,
+          "observed": true,
+          "correct": true,
+          "kind": "binary_explicit_positive"
+        },
+        {
+          "feature": "needs_deposit",
+          "expected": true,
+          "observed": true,
+          "correct": true,
+          "kind": "binary_explicit_positive"
+        }
+      ],
+      "correct": 3,
+      "evaluated": 3,
+      "all_expected_features_extracted": true,
+      "risk_label_observed_not_scored": "medium"
+    },
+    {
+      "id": "AFM-PUBLIC-015",
+      "case_name": "Eolus / ENERGY EOLUS QAZAQSTAN",
+      "language": "ru",
+      "source_url": "https://www.gov.kz/org/afm/press/news/details/649728?lang=ru",
+      "checks": [
+        {
+          "feature": "has_recruitment",
+          "expected": true,
+          "observed": true,
+          "correct": true,
+          "kind": "binary_explicit_positive"
+        },
+        {
+          "feature": "has_return_claim",
+          "expected": true,
+          "observed": true,
+          "correct": true,
+          "kind": "binary_explicit_positive"
+        },
+        {
+          "feature": "needs_deposit",
+          "expected": true,
+          "observed": true,
+          "correct": true,
+          "kind": "binary_explicit_positive"
+        },
+        {
+          "feature": "period_days",
+          "expected": 1,
+          "observed": 1,
+          "correct": true,
+          "kind": "numeric_exact"
+        }
+      ],
+      "correct": 4,
+      "evaluated": 4,
+      "all_expected_features_extracted": true,
+      "risk_label_observed_not_scored": "medium"
+    }
+  ],
+  "not_measured": [
+    "Real WhatsApp/Telegram accuracy",
+    "Population-level precision or specificity",
+    "Legal status",
+    "Cross-language campaign attribution",
+    "Percentage-return parsing (unsupported in current schema)",
+    "EUR/USD/USDT amount extraction"
+  ],
+  "interpretation": "Coverage means recall on manually identified, source-supported attributes of researcher-authored paraphrases, not accuracy on original promotional messages. Unmentioned attributes are unknown, not negative.",
+  "created_at": "2026-10-20T20:06:51.446674+00:00",
+  "engine_sha256": "fd79f8779403ecf50d0d7c12856f11b39da365f55262e2acfceb96ddf345bca9",
+  "measurement_status": "diagnostic_development",
+  "provenance_note": "Researcher-authored paraphrases of official press releases; not original Telegram/WhatsApp messages."
+}

@@ -1,0 +1,11 @@
+{
+  "prepared_date": "2026-10-21",
+  "baseline_engine_file": "pyramid_dna_engine.py",
+  "baseline_engine_sha256": "3af83fd83de07a9d32868720d7ebabf2c73a6be30f7bb1d73ff18913ef1f934d",
+  "diagnostic_set_n": 15,
+  "holdout_set_n": 5,
+  "holdout_predictions_run": false,
+  "first_diagnostic_checks_correct": 28,
+  "first_diagnostic_checks_evaluated": 45,
+  "baseline_engine_modified_during_run": false
+}
