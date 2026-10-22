@@ -118,6 +118,36 @@ SAFETY = ('оплата товара','покупк','тауар','достав�
           'аренда зала','зал арендасына','залды жалға алу','смета','сметы',
           'byudzhet','не инвестиция','инвестиция емес','investitsiya emes','не вложение')
 
+QUESTION_CONTEXT_RE = re.compile(
+    r'^(?:а\s+)?(?:правда\s+ли|есть\s+ли|существуют\s+ли|'
+    r'доказательств\w*\s+.*существ|гарантирован\w*\s+ли|'
+    r'рас\s+па|бар\s+ма|кепілдік\s+бар\s+ма)', re.I
+)
+UNVERIFIED_CONTEXT_RE = re.compile(
+    r'(?:утверждают|говорят|якобы|по\s+словам|достоверност\w*\s+не\s+проверен|'
+    r'не\s+подтвержден\w*|подтверждени\w*\s+нет|скриншот\w*\s+выплат|'
+    r'делінеді|айтуынша|расталмаған|тексерілмеген|дәлелденбеген)', re.I
+)
+QUOTED_CONTEXT_RE = re.compile(r'^\s*(?:>|цитата\s*:|переслано\s*:|forwarded\s*:)', re.I)
+
+
+def _context_status(source: str, normalized: str, *, warning: bool, benign: bool,
+                    negated: bool) -> str:
+    """Tell asserted conditions from questions, quotes and caveated mentions."""
+    if warning:
+        return 'warning'
+    if benign:
+        return 'neutral'
+    if QUOTED_CONTEXT_RE.search(source):
+        return 'quoted'
+    if '?' in source and QUESTION_CONTEXT_RE.search(normalized):
+        return 'question'
+    if negated:
+        return 'negated'
+    if UNVERIFIED_CONTEXT_RE.search(normalized):
+        return 'unverified'
+    return 'claim'
+
 STOPWORDS = {'в','на','из','по','и','или','за','до','для','про','без','как','что','его','её','но',
              'он','она','их','а','у','был','это','бір','және','мен','де','бар','жоқ','да','не'}
 
@@ -290,7 +320,7 @@ def _role_money_mentions(text: str, mentions: list[dict], deposits: bool, return
         if confidence: m['confidence']=confidence
 
 
-def _evidence_spans(source: str, normalized: str, starts: list[int], ends: list[int], hits_by_type: dict[str, list[str]], amounts: list[dict], period: dict | None) -> list[dict[str, Any]]:
+def _evidence_spans(source: str, normalized: str, starts: list[int], ends: list[int], hits_by_type: dict[str, list[str]], amounts: list[dict], period: dict | None, context_status: str = 'claim') -> list[dict[str, Any]]:
     utf16=_utf16_offsets(source); found=[]
     definitions={
       'deposit':('Требуемый взнос','Указанный фрагмент описывает внесение средств.'),
@@ -310,16 +340,16 @@ def _evidence_spans(source: str, normalized: str, starts: list[int], ends: list[
                 while word_start>0 and (normalized[word_start-1].isalnum() or normalized[word_start-1]=='_'): word_start-=1
                 while word_end<len(normalized) and (normalized[word_end].isalnum() or normalized[word_end]=='_'): word_end+=1
                 span=_source_span(word_start,word_end,starts,ends,utf16)
-                if span: found.append({'start':span[0],'end':span[1],'text':source.encode('utf-16-le')[2*span[0]:2*span[1]].decode('utf-16-le','ignore'),'feature_type':kind,'explanation':explanation,'label':title})
+                if span: found.append({'start':span[0],'end':span[1],'text':source.encode('utf-16-le')[2*span[0]:2*span[1]].decode('utf-16-le','ignore'),'feature_type':kind,'explanation':explanation,'label':title,'context_status':context_status})
     for amount in amounts:
         span=_source_span(amount['start'],amount['end'],starts,ends,utf16)
         if span:
             kind='deposit' if amount['role']=='required_contribution' else 'payout' if amount['role']=='promised_return' else 'recruitment' if amount['role']=='referral_reward' else 'deposit' if amount['role']=='package_cost' else 'payout'
             label,explanation=definitions[kind]
-            found.append({'start':span[0],'end':span[1],'text':amount['surface'],'feature_type':kind,'explanation':explanation,'label':label})
+            found.append({'start':span[0],'end':span[1],'text':amount['surface'],'feature_type':kind,'explanation':explanation,'label':label,'context_status':context_status})
     if period:
         span=_source_span(period['start'],period['end'],starts,ends,utf16)
-        if span: found.append({'start':span[0],'end':span[1],'text':source.encode('utf-16-le')[2*span[0]:2*span[1]].decode('utf-16-le','ignore'),'feature_type':'period','explanation':'Здесь указан срок или периодичность выплаты.','label':'Срок выплаты'})
+        if span: found.append({'start':span[0],'end':span[1],'text':source.encode('utf-16-le')[2*span[0]:2*span[1]].decode('utf-16-le','ignore'),'feature_type':'period','explanation':'Здесь указан срок или периодичность выплаты.','label':'Срок выплаты','context_status':context_status})
     # Keep exact ranges. A downstream renderer resolves overlaps by longest span and precedence.
     uniq={(x['start'],x['end'],x['feature_type']):x for x in found}
     return sorted(uniq.values(),key=lambda x:(x['start'],x['end'],x['feature_type']))
@@ -345,10 +375,16 @@ def analyze(text: str) -> dict[str,Any]:
     is_safe_context=bool(safe) and not bool(task)
     is_warning=bool(warning)
     deposit_negated=bool(re.search(r'(?:без\s+(?:первоначальн\w*\s+)?(?:взнос\w*|вклад\w*|инвестиц\w*)|(?:взнос|вклад|салым|жарна)\w*\s+(?:не\s+нуж\w*|не\s+требу\w*|жоқ|қажет\s+емес)|не\s+требу\w*\s+(?:взнос|вклад|салым|жарна)|инвестици\w*\s+не\s+требу\w*)',t))
-    dep_bool=bool(dep) and not deposit_negated and not is_safe_context
-    negated_return=bool(re.search(r'(?:доход|прибыл\w*|выплат\w*|табыс\w*)\s+(?:не\s+(?:гарантир|обеща|предусмотр)|не гарантирован)|(?:не обеща|не гарантиру)\w*\s+(?:никак\s+)?(?:доход|прибыл|выплат)',t))
-    if negated_return: ret=[]
-    return_bool=bool(ret)
+    dep_bool_raw=bool(dep) and not deposit_negated and not is_safe_context
+    negated_return=bool(re.search(
+        r'(?:доход|прибыл\w*|выплат\w*|табыс\w*)\s+(?:не\s+(?:гарантир|обеща|предусмотр)|не гарантирован)|'
+        r'(?:не обеща|не гарантиру)\w*\s+(?:никак\s+)?(?:доход|прибыл|выплат)|'
+        r'(?:доказательств|подтверждени\w*)\s+(?:выплат\w*\s+)?(?:пока\s+)?нет', t))
+    context_status=_context_status(text,t,warning=is_warning,benign=is_safe_context,
+                                   negated=deposit_negated or negated_return or no_guarantee)
+    confirmed_context=context_status=='claim'
+    dep_bool=dep_bool_raw and confirmed_context
+    return_bool=bool(ret) and not negated_return and confirmed_context
     # Keep monetary roles separate: a deposit requirement is a textual condition,
     # not a side effect of recognizing a KZT amount.
     _role_money_mentions(t,amounts,dep_bool,return_bool,bool(ref))
@@ -392,17 +428,17 @@ def analyze(text: str) -> dict[str,Any]:
       'period_days':period,
       'needs_deposit':dep_bool,
       'has_return_claim':return_bool,
-      'has_guarantee_claim':bool(guar) and not bool(warning),
-      'has_recruitment':bool(ref),
-      'has_individual_transfer':bool(personal),
+      'has_guarantee_claim':bool(guar) and confirmed_context,
+      'has_recruitment':bool(ref) and confirmed_context,
+      'has_individual_transfer':bool(personal) and confirmed_context,
       'has_tasks_upfront':bool(task) and dep_bool,
-      'has_urgency':bool(urgent),
+      'has_urgency':bool(urgent) and confirmed_context,
       'is_warning':is_warning,
       'is_benign_context':is_safe_context,
     }
     # Region is an indicator, not a fact that the sender is physically in Kazakhstan.
     spans=_evidence_spans(text,t,source_starts,source_ends,
-        {'deposit':dep if dep_bool else [],'payout':ret,'recruitment':ref,'guarantee':guar,'pressure':urgent},amounts,period_info)
+        {'deposit':dep,'payout':ret,'recruitment':ref,'guarantee':guar,'pressure':urgent},amounts,period_info,context_status)
     # Also expose percentage claims as typed evidence; they are not monetary amounts.
     percent_terms=[]
     for match in PERCENT_RE.finditer(t):
@@ -414,13 +450,14 @@ def analyze(text: str) -> dict[str,Any]:
                                   'unit':'percent','surface':text.encode('utf-16-le')[2*span[0]:2*span[1]].decode('utf-16-le','ignore'),
                                   'start':span[0],'end':span[1],'role':'referral_reward' if bool(ref) and any(w in t[max(0,match.start()-60):match.end()+60] for w in ('реферал','бонус','сыйақы','приглаш','шақыр')) else 'promised_return'})
             label='Вознаграждение за приглашение' if percent_terms[-1]['role']=='referral_reward' else 'Обещанная доходность'
-            spans.append({'start':span[0],'end':span[1],'text':percent_terms[-1]['surface'],'feature_type':'recruitment' if percent_terms[-1]['role']=='referral_reward' else 'payout','explanation':'Процент указан в исходном тексте; его роль определяется по ближайшему финансовому контексту.','label':label})
+            spans.append({'start':span[0],'end':span[1],'text':percent_terms[-1]['surface'],'feature_type':'recruitment' if percent_terms[-1]['role']=='referral_reward' else 'payout','explanation':'Процент указан в исходном тексте; его роль определяется по ближайшему финансовому контексту.','label':label,'context_status':context_status})
     return {
       'risk_label':risk,'risk_points':min(100,points),'evidence':evidence,
       'risk_breakdown':{'factors':evidence,'uncapped_points':points,'capped':points>100,
                         'method':'Сумма баллов сработавших правил, ограниченная 100.'},
       'amount_mentions':amounts,'financial_terms':{'money':amounts,'percentages':percent_terms,'period':period_info},
       'evidence_spans':sorted({(s['start'],s['end'],s['feature_type']):s for s in spans}.values(),key=lambda s:(s['start'],s['end'])),
+      'context_status':context_status,
       'fingerprint':fingerprint,
       'kz_relevance_indicator':'possible' if kzhint else 'unverified',
       'review_required':risk in ('medium','high'),
