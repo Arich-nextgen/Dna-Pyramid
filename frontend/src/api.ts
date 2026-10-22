@@ -1,25 +1,424 @@
 export type Value = string | number | boolean | null;
-export type EvidenceSpan={start:number;end:number;text:string;feature_type:'deposit'|'payout'|'period'|'recruitment'|'guarantee'|'pressure';explanation:string;label:string};
-export type MoneyTerm={value:number|null;min:number;max:number;currency:string;surface:string;start:number;end:number;role:string;confidence?:number;source_span?:[number,number];value_kzt?:number};
-export type RiskFactor={indicator:string;points:number;matched:string[]};
-export type Analysis = {risk_label:'low'|'medium'|'high';risk_points:number;review_required:boolean;kz_relevance_indicator:string;fingerprint:Record<string,Value>;evidence:RiskFactor[];risk_breakdown?:{factors:RiskFactor[];uncapped_points:number;capped:boolean;method:string};evidence_spans?:EvidenceSpan[];financial_terms?:{money:MoneyTerm[];percentages:{min:number;max:number;unit:string;surface:string;start:number;end:number;role:string}[];period:{value:number;unit:string;min:number;max:number;start:number;end:number}|null};amount_mentions:MoneyTerm[]};
-export type RecordItem={id:string;text:string;language:string;risk_label:string;split:string;source_type:string};
-export type Neighbor=RecordItem & {similarity:number;shared_features:string[]};
-export type CaseItem={id:string;title:string;text:string;created_at:string;source_type:string;source_url:string;sha256:string;analysis:Analysis;notes:string;status:string};
-export type FeatureComparison={feature:string;label:string;left_value:Value|Record<string,Value>;right_value:Value|Record<string,Value>;status:'exact_match'|'partial_match'|'conflict'|'missing_left'|'missing_right'|'unknown';weight:number;included_weight:number;raw_contribution:number;normalized_contribution:number;explanation:string};
-export type Comparison={comparison:{similarity:number;is_similar:boolean;shared_features:string[];feature_comparison:FeatureComparison[];caution:string};left_analysis:Analysis;right_analysis:Analysis};
-export type Evaluation={split:string;risk_classification:{count:number;accuracy_3class:number;high_risk_precision:number;high_risk_recall:number;high_risk_false_positive_rate:number;confusion_matrix_gold_rows:Record<string,Record<string,number>>};mechanism_similarity:{pair_precision:number;pair_recall:number;pair_false_positive_rate:number;positive_pairs:number;negative_pairs:number;threshold:number}};
-export type BenchmarkResult={created_at:string;engine_sha256:string;dataset_sha256:string;seed:number;mechanism_leakage_check:string;pairs:Record<string,{positive:number;negative:number;sample_size:number}>;frozen_thresholds:Record<string,number>;test_metrics_once:Record<string,{precision:number;recall:number;fpr:number|null;f1:number;threshold:number;sample_size:number;confusion:{tp:number;fp:number;fn:number;tn:number}}>};
-export type PublicChallengeResult={created_at:string;measurement_status:string;engine_sha256:string;data_sha256:string;case_count:number;distinct_source_urls:number;extraction_coverage:{correct_checks:number;evaluated_checks:number;rate:number;cases_with_all_expected_checks:number;total_cases:number};per_feature:Record<string,{correct:number;evaluated:number;coverage:number;failures:string[]}>;per_case:{id:string;all_expected_features_extracted:boolean;source_url:string;checks:{feature:string;correct:boolean}[]}[];provenance_note:string};
-export async function api<T>(path:string, body?:unknown, method?:string):Promise<T>{
- if(import.meta.env.VITE_BROWSER_PYTHON==='true'){const {pythonRequest}=await import('./pythonClient');return pythonRequest<T>(path,body,method);}
- let response:Response;
- try{response=await fetch(path.startsWith('/health')?path:'/api/v1'+path,{method:method??(body?'POST':'GET'),headers:{'Content-Type':'application/json'},body:body?JSON.stringify(body):undefined,signal:AbortSignal.timeout(30000)});}catch{throw new Error('Сервер недоступен или не ответил вовремя. Проверьте подключение и повторите попытку.');}
- if(!response.ok){const messages:Record<number,string>={401:'Доступ запрещён. Сервер требует API-ключ; обратитесь к администратору.',404:'Материал не найден.',422:'Проверьте данные: текст должен содержать от 3 до 10 000 символов.'};throw new Error(messages[response.status]??`Ошибка сервера (${response.status}). Повторите попытку.`);}
- return response.status===204?undefined as T:response.json();
+export type ContextStatus =
+  | "claim"
+  | "question"
+  | "quoted"
+  | "warning"
+  | "negated"
+  | "unverified"
+  | "neutral";
+export type EvidenceSpan = {
+  start: number;
+  end: number;
+  text: string;
+  feature_type:
+    | "deposit"
+    | "payout"
+    | "period"
+    | "recruitment"
+    | "guarantee"
+    | "pressure";
+  explanation: string;
+  label: string;
+  context_status?: ContextStatus;
+};
+export type MoneyTerm = {
+  value: number | null;
+  min: number;
+  max: number;
+  currency: string;
+  surface: string;
+  start: number;
+  end: number;
+  role: string;
+  confidence?: number;
+  source_span?: [number, number];
+  value_kzt?: number;
+};
+export type RiskFactor = {
+  indicator: string;
+  points: number;
+  matched: string[];
+};
+export type Analysis = {
+  risk_label: "low" | "medium" | "high";
+  risk_points: number;
+  review_required: boolean;
+  kz_relevance_indicator: string;
+  context_status?: ContextStatus;
+  fingerprint: Record<string, Value>;
+  evidence: RiskFactor[];
+  risk_breakdown?: {
+    factors: RiskFactor[];
+    uncapped_points: number;
+    capped: boolean;
+    method: string;
+  };
+  evidence_spans?: EvidenceSpan[];
+  financial_terms?: {
+    money: MoneyTerm[];
+    percentages: {
+      min: number;
+      max: number;
+      unit: string;
+      surface: string;
+      start: number;
+      end: number;
+      role: string;
+    }[];
+    period: {
+      value: number;
+      unit: string;
+      min: number;
+      max: number;
+      start: number;
+      end: number;
+    } | null;
+  };
+  amount_mentions: MoneyTerm[];
+};
+export type ConversationMessage = {
+  message_id: string;
+  order: number;
+  text: string;
+  timestamp: string | null;
+  author_label: string | null;
+  is_system: boolean;
+  phone_redacted?: boolean;
+  analysis?: Analysis;
+  excluded_reason?:
+    | "system_message"
+    | "warning_context"
+    | "benign_context"
+    | "unconfirmed_quote"
+    | "question_context"
+    | "unverified_context"
+    | "negated_context"
+    | null;
+};
+export type ConversationPreview = {
+  messages: ConversationMessage[];
+  recognized_format: boolean;
+  warnings: string[];
+  stats: {
+    message_count: number;
+    recognized_headers: number;
+    ignored_blank_lines: number;
+    participant_count: number;
+  };
+};
+export type ConversationAmount = {
+  value: number;
+  min: number;
+  max: number;
+  currency: string;
+  surface: string;
+  role: string;
+};
+export type ConversationFingerprint = {
+  deposit: ConversationAmount | null;
+  payout: ConversationAmount | null;
+  payout_multiplier: number | null;
+  period_days: number | null;
+  referral_count: number | null;
+  needs_deposit: boolean;
+  has_return_claim: boolean;
+  has_guarantee_claim: boolean;
+  has_recruitment: boolean;
+  has_individual_transfer: boolean;
+  has_urgency: boolean;
+  has_tasks_upfront: boolean;
+};
+export type ConversationEvidence = EvidenceSpan & {
+  evidence_id: string;
+  mechanism_id: string;
+  message_id: string;
+};
+export type ConversationMechanism = {
+  mechanism_id: string;
+  source_message_ids: string[];
+  connection_status: "confirmed" | "single_message" | "unconfirmed";
+  fingerprint: ConversationFingerprint;
+  risk_points: number;
+  risk_label: "low" | "medium" | "high";
+  risk_factors: { indicator: string; points: number }[];
+  unknown_fields: string[];
+};
+export type ConversationResult = {
+  messages: ConversationMessage[];
+  mechanisms: ConversationMechanism[];
+  evidence: ConversationEvidence[];
+  conflicts: { type: string; message_ids: string[]; explanation: string }[];
+  unknowns: { mechanism_id: string; field: string; explanation: string }[];
+  risk_label: "low" | "medium" | "high";
+  risk_points: number;
+  risk_method: string;
+  review_required: boolean;
+  disclaimer: string;
+};
+export type RecordItem = {
+  id: string;
+  text: string;
+  language: string;
+  risk_label: string;
+  split: string;
+  source_type: string;
+};
+export type Neighbor = RecordItem & {
+  similarity: number;
+  shared_features: string[];
+};
+export type CaseItem = {
+  id: string;
+  title: string;
+  text: string;
+  created_at: string;
+  source_type: string;
+  source_url: string;
+  sha256: string;
+  analysis: Analysis;
+  notes: string;
+  status: string;
+};
+export type FeatureComparison = {
+  feature: string;
+  label: string;
+  left_value: Value | Record<string, Value>;
+  right_value: Value | Record<string, Value>;
+  status:
+    | "exact_match"
+    | "partial_match"
+    | "conflict"
+    | "missing_left"
+    | "missing_right"
+    | "unknown";
+  weight: number;
+  included_weight: number;
+  raw_contribution: number;
+  normalized_contribution: number;
+  explanation: string;
+};
+export type Comparison = {
+  comparison: {
+    similarity: number;
+    is_similar: boolean;
+    shared_features: string[];
+    feature_comparison: FeatureComparison[];
+    caution: string;
+  };
+  left_analysis: Analysis;
+  right_analysis: Analysis;
+};
+export type Evaluation = {
+  split: string;
+  risk_classification: {
+    count: number;
+    accuracy_3class: number;
+    high_risk_precision: number;
+    high_risk_recall: number;
+    high_risk_false_positive_rate: number;
+    confusion_matrix_gold_rows: Record<string, Record<string, number>>;
+  };
+  mechanism_similarity: {
+    pair_precision: number;
+    pair_recall: number;
+    pair_false_positive_rate: number;
+    positive_pairs: number;
+    negative_pairs: number;
+    threshold: number;
+  };
+};
+export type BenchmarkResult = {
+  created_at: string;
+  engine_sha256: string;
+  dataset_sha256: string;
+  seed: number;
+  mechanism_leakage_check: string;
+  pairs: Record<
+    string,
+    { positive: number; negative: number; sample_size: number }
+  >;
+  frozen_thresholds: Record<string, number>;
+  test_metrics_once: Record<
+    string,
+    {
+      precision: number;
+      recall: number;
+      fpr: number | null;
+      f1: number;
+      threshold: number;
+      sample_size: number;
+      confusion: { tp: number; fp: number; fn: number; tn: number };
+    }
+  >;
+};
+export type PublicChallengeResult = {
+  created_at: string;
+  measurement_status: string;
+  engine_sha256: string;
+  data_sha256: string;
+  case_count: number;
+  distinct_source_urls: number;
+  extraction_coverage: {
+    correct_checks: number;
+    evaluated_checks: number;
+    rate: number;
+    cases_with_all_expected_checks: number;
+    total_cases: number;
+  };
+  per_feature: Record<
+    string,
+    { correct: number; evaluated: number; coverage: number; failures: string[] }
+  >;
+  per_case: {
+    id: string;
+    all_expected_features_extracted: boolean;
+    source_url: string;
+    checks: { feature: string; correct: boolean }[];
+  }[];
+  provenance_note: string;
+};
+export type ConversationBenchmarkResult = {
+  created_at: string;
+  case_count: number;
+  dataset_provenance: string;
+  mechanism_count_accuracy: number;
+  feature_accuracy: number;
+  evidence_link_accuracy: number;
+  risk_expectation_accuracy: number;
+  false_mechanism_merge_rate: number | null;
+  false_merge_cases: number;
+  interpretation: string;
+};
+export type OcrBenchmarkResult = {
+  created_at: string;
+  library: string;
+  languages: string[];
+  case_count: number;
+  model_initialization_seconds: number | null;
+  average_recognition_seconds: number;
+  average_cer: number;
+  average_wer: number;
+  raw_financial_field_accuracy: number;
+  review_text_financial_field_accuracy: number;
+  raw_amount_exact_match: number;
+  review_text_amount_exact_match: number;
+  raw_tenge_symbol_retention: number;
+  review_text_tenge_symbol_retention: number;
+  kazakh_character_recall: number;
+  cases: {
+    id: string;
+    cer: number;
+    wer: number;
+    elapsed_seconds: number;
+    financial_fields_correct: number;
+    raw_financial_fields_correct: number;
+    financial_fields_total: number;
+    recognized_text: string;
+    normalized_text: string;
+    currency_glyph_normalizations: number;
+    confidence: number;
+  }[];
+  known_limitations: string[];
+};
+export async function api<T>(
+  path: string,
+  body?: unknown,
+  method?: string,
+): Promise<T> {
+  if (import.meta.env.VITE_BROWSER_PYTHON === "true") {
+    const { pythonRequest } = await import("./pythonClient");
+    return pythonRequest<T>(path, body, method);
+  }
+  let response: Response;
+  try {
+    response = await fetch(
+      path.startsWith("/health") ? path : "/api/v1" + path,
+      {
+        method: method ?? (body ? "POST" : "GET"),
+        headers: { "Content-Type": "application/json" },
+        body: body ? JSON.stringify(body) : undefined,
+        signal: AbortSignal.timeout(30000),
+      },
+    );
+  } catch {
+    throw new Error(
+      "Сервер недоступен или не ответил вовремя. Проверьте подключение и повторите попытку.",
+    );
+  }
+  if (!response.ok) {
+    const messages: Record<number, string> = {
+      401: "Доступ запрещён. Сервер требует API-ключ; обратитесь к администратору.",
+      404: "Материал не найден.",
+      422: "Проверьте данные: текст должен содержать от 3 до 10 000 символов.",
+    };
+    throw new Error(
+      messages[response.status] ??
+        `Ошибка сервера (${response.status}). Повторите попытку.`,
+    );
+  }
+  return response.status === 204 ? (undefined as T) : response.json();
 }
-export const labels:Record<string,string>={deposit_kzt:'Первоначальный взнос',promised_payout_kzt:'Обещанная выплата',payout_multiplier:'Коэффициент выплаты',referral_count:'Число приглашённых',period_days:'Срок, дней',needs_deposit:'Требуется взнос',has_return_claim:'Обещание дохода',has_guarantee_claim:'Гарантия выплаты',has_recruitment:'Привлечение участников',has_individual_transfer:'Личный перевод',has_tasks_upfront:'Задания с предоплатой',has_urgency:'Срочность',is_warning:'Контекст предупреждения',is_benign_context:'Бытовая операция'};
-export const riskLabel:Record<string,string>={high:'Высокий риск',medium:'Средний риск',low:'Низкий риск'};
-export function value(v:Value|Record<string,Value>|undefined,key=''):string{if(v==null)return 'Недостаточно данных';if(typeof v==='object'){const currency=String(v.currency??'');const min=v.min,max=v.max;if(min==null||max==null)return 'Недостаточно данных';const amount=(n:Value)=>typeof n==='number'?n.toLocaleString('ru-RU'):String(n);return `${amount(min)}${min===max?'':`–${amount(max)}`} ${currency}`.trim();}return typeof v==='boolean'?(v?'Обнаружено':'Не обнаружено'):typeof v==='number'?v.toLocaleString('ru-RU')+(key.endsWith('_kzt')?' ₸':key==='payout_multiplier'?' ×':''):v;}
-export function feature(s:string){if(s==='same_multiplier')return 'Одинаковый коэффициент выплаты';const [k,v]=s.split('=');return (labels[k]??k)+(v?' · '+v:'');}
-export function download(data:unknown,name:string){const url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);}
+export const labels: Record<string, string> = {
+  deposit_kzt: "Первоначальный взнос",
+  promised_payout_kzt: "Обещанная выплата",
+  payout_multiplier: "Коэффициент выплаты",
+  referral_count: "Число приглашённых",
+  period_days: "Срок, дней",
+  needs_deposit: "Требуется взнос",
+  has_return_claim: "Обещание дохода",
+  has_guarantee_claim: "Гарантия выплаты",
+  has_recruitment: "Привлечение участников",
+  has_individual_transfer: "Личный перевод",
+  has_tasks_upfront: "Задания с предоплатой",
+  has_urgency: "Срочность",
+  is_warning: "Контекст предупреждения",
+  is_benign_context: "Бытовая операция",
+};
+export const riskLabel: Record<string, string> = {
+  high: "Высокий риск",
+  medium: "Средний риск",
+  low: "Низкий риск",
+};
+export function value(
+  v: Value | Record<string, Value> | undefined,
+  key = "",
+): string {
+  if (v == null) return "Недостаточно данных";
+  if (typeof v === "object") {
+    const currency = String(v.currency ?? "");
+    const min = v.min,
+      max = v.max;
+    if (min == null || max == null) return "Недостаточно данных";
+    const amount = (n: Value) =>
+      typeof n === "number" ? n.toLocaleString("ru-RU") : String(n);
+    return `${amount(min)}${min === max ? "" : `–${amount(max)}`} ${currency}`.trim();
+  }
+  return typeof v === "boolean"
+    ? v
+      ? "Обнаружено"
+      : "Не обнаружено"
+    : typeof v === "number"
+      ? v.toLocaleString("ru-RU") +
+        (key.endsWith("_kzt") ? " ₸" : key === "payout_multiplier" ? " ×" : "")
+      : v;
+}
+export function feature(s: string) {
+  if (s === "same_multiplier") return "Одинаковый коэффициент выплаты";
+  const [k, v] = s.split("=");
+  return (labels[k] ?? k) + (v ? " · " + v : "");
+}
+export function download(data: unknown, name: string) {
+  const url = URL.createObjectURL(
+    new Blob([JSON.stringify(data, null, 2)], {
+      type: "application/json;charset=utf-8",
+    }),
+  );
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = name;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 60000);
+}
